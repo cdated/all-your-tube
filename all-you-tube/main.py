@@ -14,9 +14,12 @@ from shlex import quote
 from flask import Flask, Blueprint, render_template, request, redirect, abort, url_for
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-PREFIX="/yourtube"
+PREFIX = "/yourtube"
+WORKDIR = os.environ.get("AYT_WORKDIR")
+if not WORKDIR:
+    raise RuntimeError("AYT_WORKDIR env variable must be set")
 
-bp = Blueprint('bp', __name__, static_folder='static', template_folder='templates')
+bp = Blueprint("bp", __name__, static_folder="static", template_folder="templates")
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
@@ -27,71 +30,56 @@ def inject_dict_for_all_templates():
 
 
 def validate_input(val):
-    if val and ';' in val:
+    if val and ";" in val:
         return False
     return True
 
-@bp.route('/save', methods=['POST'])
+
+@bp.route("/save", methods=["POST"])
 def download_video():
     path = request.form.get("url")
-    directory = request.form.get("directory")
-    password = request.form.get("password")
-    token = request.form.get("token")
-
-    print(path)
-    print(directory)
-    print(password)
-    print(token)
+    target_dir = request.form.get("directory")
 
     success = True
-    if token != 'zombiemao':
+
+    if target_dir and "/" in target_dir:
         success = False
 
-    if directory and '/' in directory:
+    if not validate_input(path):
         success = False
 
-    if not validate_input(path) or not validate_input(password):
-        success = False
-
-    ytargs = path
-    if password:
-        ytargs = "{} --video-password {}".format(path, password)
+    ytargs = path + ' -o "%(title)s.%(ext)s" &'
     print(ytargs)
+    workdir = WORKDIR
 
-    if success and (path and 'http' in path):
-        #workdir = "/mnt/raft/plex/YouTube_Unsorted"
-        workdir = "/mnt/raft/matthew"
-#        if directory:
-#            workdir = "/mnt/vault/Brandon/YouTube/" + directory.strip()
+    if success and (path and "http" in path):
+        if target_dir:
+            workdir += target_dir.strip()
 
         if not os.path.exists(workdir):
             os.mkdir(workdir)
 
         os.chdir(workdir)
 
-        if "twitter" in ytargs:
-            cmd = "youtube-dl"
-        else:
-            cmd = "/home/cdated/yt-save.sh"
-        subprocess.run('{} {}'.format(quote(cmd), quote(ytargs)), shell=True)
+        cmd = "yt-dlp"
+        subprocess.run("{} {}".format(quote(cmd), quote(ytargs)), shell=True)
         os.chdir(workdir)
 
-    return render_template('index.html')
+    return render_template("index.html")
 
 
-@bp.route('/', methods=['GET'])
+@bp.route("/", methods=["GET"])
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
 
 def main():
-    port = int(os.environ.get('PORT', 1424))
-    app.debug = os.environ.get('DEBUG', False)
+    port = int(os.environ.get("PORT", 1424))
+    app.debug = os.environ.get("DEBUG", False)
 
     app.register_blueprint(bp, url_prefix=PREFIX)
-    print(app.url_map)
-    app.run(host='10.0.1.4', port=port)
+    app.run(host="0.0.0.0", port=port, threaded=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
