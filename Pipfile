@@ -18,6 +18,7 @@ pymongo = "*"
 feedparser = "*"
 listparser = "*"
 werkzeug = "==1.0.0"
+pylint = "*"
 
 [requires]
 python_version = "3.8"

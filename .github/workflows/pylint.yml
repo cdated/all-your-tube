@@ -19,7 +19,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pylint
         pip install pipenv
-        pipenv shell
     - name: Analysing the code with pylint
       run: |
+        pipenv install -d
         pylint $(git ls-files '*.py')
