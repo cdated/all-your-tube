@@ -1,17 +1,15 @@
+"""
+Collect yt-dlp parameters through a web form using Flask.
+"""
+
 from __future__ import print_function
-from six.moves import input
 
-from datetime import datetime
-
-import io
-import json
-import hashlib
 import os
 import subprocess
 
 from shlex import quote
 
-from flask import Flask, Blueprint, render_template, request, redirect, abort, url_for
+from flask import Flask, Blueprint, render_template, request
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 PREFIX = "/yourtube"
@@ -26,10 +24,12 @@ app.wsgi_app = ProxyFix(app.wsgi_app)
 
 @app.context_processor
 def inject_dict_for_all_templates():
-    return dict(url_prefix=PREFIX)
+    """Inject URL location"""
+    return {"url_prefix": PREFIX}
 
 
 def validate_input(val):
+    """Barest minimum code injection check"""
     if val and ";" in val:
         return False
     return True
@@ -37,6 +37,7 @@ def validate_input(val):
 
 @bp.route("/save", methods=["POST"])
 def download_video():
+    """Perform yt-dlp command from form data"""
     path = request.form.get("url")
     target_dir = request.form.get("directory")
 
@@ -61,8 +62,9 @@ def download_video():
 
         os.chdir(workdir)
 
+        # Fire and forget for now
         cmd = "yt-dlp"
-        subprocess.run("{} {}".format(quote(cmd), quote(ytargs)), shell=True)
+        subprocess.run(f"{quote(cmd)} {quote(ytargs)}", shell=True, check=False)
         os.chdir(workdir)
 
     return render_template("index.html")
@@ -70,10 +72,12 @@ def download_video():
 
 @bp.route("/", methods=["GET"])
 def index():
+    """Create download request form"""
     return render_template("index.html")
 
 
 def main():
+    """Run Flask server to request yt-dlp commands"""
     port = int(os.environ.get("PORT", 1424))
     app.debug = os.environ.get("DEBUG", False)
 
