@@ -1,4 +1,0 @@
-six
-pbr
-setuptools
-future

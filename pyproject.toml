@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "all-your-tube"
+version = "0.1.0"
+description = "UI for yt-dlp"
+authors = ["Brandon T. Fields <brandon@cdated.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+werkzeug = "^3.0.2"
+flask = "^3.0.3"
+pylint = "^3.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
