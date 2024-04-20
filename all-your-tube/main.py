@@ -8,6 +8,7 @@ import os
 import subprocess
 import time
 
+from pygtail import Pygtail
 from datetime import datetime
 from shlex import quote
 
@@ -65,14 +66,17 @@ def log_desc(pid):
 def stream(pid):
     logfile = WORKDIR + "/" + pid + ".log"
 
-    def generate():
-        yield "Log data..."
-        with open(logfile, "r") as f:
-            while True:
-                yield f.read(1024)
+    # def generate():
+    #     yield "Log data..."
+    #     with open(logfile, "r") as f:
+    #         while True:
+    #             yield f.read(1024)
 
-    # return app.response_class(generate(), mimetype="text/plain")
-    return Response(stream_with_context(generate()), mimetype="text/plain")
+    def generate():
+        for line in Pygtail(logfile, every_n=1):
+            yield "data:" + str(line) + "\n\n"
+
+    return Response(generate(), mimetype="text/event-stream")
 
 
 @bp.route("/save", methods=["POST"])
@@ -107,8 +111,10 @@ def download_video():
         cmd = quote("yt-dlp")
         pid = str(int(datetime.now().timestamp()))
         job_log = pid + ".log"
+        command = f"nohup {cmd} {ytargs} && echo 'Download Complete' > {job_log}"
         subprocess.Popen(
-            ["nohup", cmd, ytargs],
+            command,
+            shell=True,
             stderr=open(job_log, "a"),
             stdout=open(job_log, "a"),
             preexec_fn=os.setpgrp,
