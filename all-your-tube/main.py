@@ -6,9 +6,13 @@ from __future__ import print_function
 
 import os
 import subprocess
+import time
 
+from datetime import datetime
 from shlex import quote
 
+from flask import Response, stream_with_context
+from flask import redirect, url_for, send_from_directory
 from flask import Flask, Blueprint, render_template, request
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -35,6 +39,42 @@ def validate_input(val):
     return True
 
 
+@bp.route("/logs/<pid>")
+def send_report(pid):
+    # logfile = pid + ".log"
+    # return send_from_directory(WORKDIR, logfile)
+    return render_template("log.html", pid=pid)
+
+
+@bp.route("/log_desc/<pid>")
+def log_desc(pid):
+    """Get the first 'download' line from the logs to describe the job."""
+    logfile = WORKDIR + "/" + pid + ".log"
+
+    with open(logfile, "r") as f:
+        while True:
+            line = f.readline()
+            if "download" in line:
+                break
+        desc = str.encode(line)
+
+    return app.response_class(desc, mimetype="text/plain")
+
+
+@bp.route("/stream/<pid>")
+def stream(pid):
+    logfile = WORKDIR + "/" + pid + ".log"
+
+    def generate():
+        yield "Log data..."
+        with open(logfile, "r") as f:
+            while True:
+                yield f.read(1024)
+
+    # return app.response_class(generate(), mimetype="text/plain")
+    return Response(stream_with_context(generate()), mimetype="text/plain")
+
+
 @bp.route("/save", methods=["POST"])
 def download_video():
     """Perform yt-dlp command from form data"""
@@ -49,9 +89,10 @@ def download_video():
     if not validate_input(path):
         success = False
 
-    ytargs = path + ' -o "%(title)s.%(ext)s" &'
+    ytargs = path + ' -o "%(title)s.%(ext)s"'
     print(ytargs)
     workdir = WORKDIR
+    pid = None
 
     if success and (path and "http" in path):
         if target_dir:
@@ -63,11 +104,21 @@ def download_video():
         os.chdir(workdir)
 
         # Fire and forget for now
-        cmd = "yt-dlp"
-        subprocess.run(f"{quote(cmd)} {quote(ytargs)}", shell=True, check=False)
+        cmd = quote("yt-dlp")
+        pid = str(int(datetime.now().timestamp()))
+        job_log = pid + ".log"
+        subprocess.Popen(
+            ["nohup", cmd, ytargs],
+            stderr=open(job_log, "a"),
+            stdout=open(job_log, "a"),
+            preexec_fn=os.setpgrp,
+        ).pid
         os.chdir(workdir)
 
-    return render_template("index.html")
+    if pid:
+        return redirect(url_for("bp.send_report", pid=pid))
+    else:
+        return render_template("index.html")
 
 
 @bp.route("/", methods=["GET"])

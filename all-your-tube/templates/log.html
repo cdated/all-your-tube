@@ -1,0 +1,30 @@
+<h1>Download logs...</h1>
+<pre id="log_desc"></pre>
+<div id="logs" style="
+    max-height: 400px;
+    height: 400px;
+    overflow: scroll;
+">
+  <pre id="output"></pre>
+</div>
+<script>
+    var output = document.getElementById('output');
+    var log_desc = document.getElementById('log_desc');
+    var logs = document.getElementById('logs');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '{{ url_for('bp.stream', pid=pid) }}');
+    xhr.setRequestHeader('Cache-Control', 'no-cache');
+    xhr.send();
+
+    var xhr_desc = new XMLHttpRequest();
+    xhr_desc.open('GET', '{{ url_for('bp.log_desc', pid=pid) }}');
+    xhr_desc.send();
+
+    setInterval(function() {
+        output.textContent = xhr.responseText;
+        log_desc.textContent = xhr_desc.responseText;
+	logs.scrollTop = logs.scrollHeight;
+    }, 1000);
+</script>
+
