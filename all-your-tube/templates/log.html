@@ -1,0 +1,40 @@
+<h1>Download Logs</h1>
+
+<pre id="desc"></pre>
+<div id="logs" style="
+    max-height: 400px;
+    height: 400px;
+    overflow: scroll;
+">
+  <pre id="output"></pre>
+</div>
+<script>
+    var output = document.getElementById('output');
+    var desc = document.getElementById('desc');
+    var logs = document.getElementById('logs');
+
+    // Get the description of the download event
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+        desc.textContent = xhr.responseText;
+      }
+    }
+    xhr.open('GET', '{{ url_for('bp.log_desc', pid=pid) }}');
+    xhr.send();
+
+    // Get the logs data from the server
+    var source = new EventSource("{{ url_for('bp.stream', pid=pid) }}");
+    source.onmessage = function(event) {
+      output.textContent += "\n" + event.data;
+      if(event.data == "Download Complete"){
+        source.close()
+      }
+    }
+
+    // Move the logs scroll to the bottom
+    setInterval(function() {
+	logs.scrollTop = logs.scrollHeight;
+    }, 1000);
+</script>
+

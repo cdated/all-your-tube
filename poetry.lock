@@ -234,6 +234,18 @@ docs = ["furo (>=2023.9.10)", "proselint (>=0.13)", "sphinx (>=7.2.6)", "sphinx-
 test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=7.4.3)", "pytest-cov (>=4.1)", "pytest-mock (>=3.12)"]
 
 [[package]]
+name = "pygtail"
+version = "0.14.0"
+description = "Reads log file lines that have not been read."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pygtail-0.14.0-py3-none-any.whl", hash = "sha256:3d8e847d4d5c56e3cece1f65577562e63f8b75af7b93bf21b71c3213d369c2a9"},
+    {file = "pygtail-0.14.0.tar.gz", hash = "sha256:55616d31a081eaaeb069d0946f2bc7e530ebf505d4c3c050f8e941786a3449d3"},
+]
+
+[[package]]
 name = "pylint"
 version = "3.1.0"
 description = "python code static checker"
@@ -294,4 +306,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "b162a1587eaa1ba0793018cdfca4a071841140037c99a0e6277a615d086f9535"
+content-hash = "00ae8a613caa25b03c95bdbf620d24eba60b7a9b4ff421ad5edffff1e6369f4e"
