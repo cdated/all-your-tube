@@ -2,14 +2,22 @@
 Collect yt-dlp parameters through a web form using Flask.
 """
 
-from __future__ import print_function
-
+import logging
 import os
 import subprocess
-
+from datetime import datetime
 from shlex import quote
 
-from flask import Flask, Blueprint, render_template, request
+from flask import (
+    Blueprint,
+    Flask,
+    Response,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
+from pygtail import Pygtail
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 PREFIX = "/yourtube"
@@ -20,6 +28,11 @@ if not WORKDIR:
 bp = Blueprint("bp", __name__, static_folder="static", template_folder="templates")
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app)
+
+# Configure Flask logging
+app.logger.setLevel(logging.INFO)  # Set log level to INFO
+handler = logging.FileHandler("app.log")  # Log to a file
+app.logger.addHandler(handler)
 
 
 @app.context_processor
@@ -33,6 +46,41 @@ def validate_input(val):
     if val and ";" in val:
         return False
     return True
+
+
+@bp.route("/logs/<pid>")
+def render_live_logs(pid):
+    """Render log page"""
+    return render_template("log.html", pid=pid)
+
+
+@bp.route("/log_desc/<pid>")
+def log_desc(pid):
+    """Get the first 'download' line from the logs to describe the job."""
+    logfile = WORKDIR + "/" + pid + ".log"
+
+    with open(logfile, "r", encoding="utf-8") as f:
+        while True:
+            line = f.readline()
+            if "[download]" in line:
+                break
+        desc = str.encode(line)
+
+    return app.response_class(desc, mimetype="text/plain")
+
+
+@bp.route("/stream/<pid>")
+def stream(pid):
+    """Stream the download log data"""
+    logfile = WORKDIR + "/" + pid + ".log"
+
+    def generate():
+        for line in Pygtail(logfile, every_n=1):
+            data = "data:" + str(line) + "\n\n"
+            if "nohup:" not in data:
+                yield data
+
+    return Response(generate(), mimetype="text/event-stream")
 
 
 @bp.route("/save", methods=["POST"])
@@ -49,9 +97,9 @@ def download_video():
     if not validate_input(path):
         success = False
 
-    ytargs = path + ' -o "%(title)s.%(ext)s" &'
-    print(ytargs)
+    ytargs = quote(path) + ' -o "%(title)s.%(ext)s"'
     workdir = WORKDIR
+    pid = None
 
     if success and (path and "http" in path):
         if target_dir:
@@ -62,10 +110,31 @@ def download_video():
 
         os.chdir(workdir)
 
-        # Fire and forget for now
-        cmd = "yt-dlp"
-        subprocess.run(f"{quote(cmd)} {quote(ytargs)}", shell=True, check=False)
+        # Use a timestamp to refer to the download logs
+        # Redirct to the logs page to watch progress
+        cmd = quote("yt-dlp")
+        pid = str(int(datetime.now().timestamp()))
+        job_log = pid + ".log"
+        command = f"nohup {cmd} {ytargs} >> {job_log} && echo 'Download Complete' >> {job_log}"
+        app.logger.info("Running command: %s", command)
+
+        with open(job_log, "w", encoding="utf-8") as f:
+            f.write("Starting...")
+
+        # pylint: disable=consider-using-with
+        # pylint: disable=subprocess-popen-preexec-fn
+        subprocess.Popen(
+            command,
+            shell=True,
+            stderr=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            preexec_fn=os.setpgrp,
+        )
         os.chdir(workdir)
+
+    if pid:
+        app.logger.info("Redirecting to logs pag for %s", pid)
+        return redirect(url_for("bp.render_live_logs", pid=pid))
 
     return render_template("index.html")
 
