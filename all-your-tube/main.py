@@ -2,20 +2,22 @@
 Collect yt-dlp parameters through a web form using Flask.
 """
 
-from __future__ import print_function
-
-import os
 import logging
+import os
 import subprocess
-import time
-
-from pygtail import Pygtail
 from datetime import datetime
 from shlex import quote
 
-from flask import Response, stream_with_context
-from flask import redirect, url_for, send_from_directory
-from flask import Flask, Blueprint, render_template, request
+from flask import (
+    Blueprint,
+    Flask,
+    Response,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
+from pygtail import Pygtail
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 PREFIX = "/yourtube"
@@ -57,10 +59,10 @@ def log_desc(pid):
     """Get the first 'download' line from the logs to describe the job."""
     logfile = WORKDIR + "/" + pid + ".log"
 
-    with open(logfile, "r") as f:
+    with open(logfile, "r", encoding="utf-8") as f:
         while True:
             line = f.readline()
-            if "download" in line:
+            if "[download]" in line:
                 break
         desc = str.encode(line)
 
@@ -113,21 +115,28 @@ def download_video():
         cmd = quote("yt-dlp")
         pid = str(int(datetime.now().timestamp()))
         job_log = pid + ".log"
-        command = f"nohup {cmd} {ytargs} && echo 'Download Complete' >> {job_log}"
-        app.logger.info(f"Running command: {command}")
+        command = f"nohup {cmd} {ytargs} >> {job_log} && echo 'Download Complete' >> {job_log}"
+        app.logger.info("Running command: %s", command)
+
+        with open(job_log, "w", encoding="utf-8") as f:
+            f.write("Starting...")
+
+        # pylint: disable=consider-using-with
+        # pylint: disable=subprocess-popen-preexec-fn
         subprocess.Popen(
             command,
             shell=True,
-            stderr=open(job_log, "a"),
-            stdout=open(job_log, "a"),
+            stderr=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
             preexec_fn=os.setpgrp,
-        ).pid
+        )
         os.chdir(workdir)
 
     if pid:
+        app.logger.info("Redirecting to logs pag for %s", pid)
         return redirect(url_for("bp.render_live_logs", pid=pid))
-    else:
-        return render_template("index.html")
+
+    return render_template("index.html")
 
 
 @bp.route("/", methods=["GET"])
