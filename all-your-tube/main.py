@@ -5,6 +5,7 @@ Collect yt-dlp parameters through a web form using Flask.
 from __future__ import print_function
 
 import os
+import logging
 import subprocess
 import time
 
@@ -26,6 +27,11 @@ bp = Blueprint("bp", __name__, static_folder="static", template_folder="template
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
+# Configure Flask logging
+app.logger.setLevel(logging.INFO)  # Set log level to INFO
+handler = logging.FileHandler("app.log")  # Log to a file
+app.logger.addHandler(handler)
+
 
 @app.context_processor
 def inject_dict_for_all_templates():
@@ -41,9 +47,8 @@ def validate_input(val):
 
 
 @bp.route("/logs/<pid>")
-def send_report(pid):
-    # logfile = pid + ".log"
-    # return send_from_directory(WORKDIR, logfile)
+def render_live_logs(pid):
+    """Render log page"""
     return render_template("log.html", pid=pid)
 
 
@@ -64,17 +69,14 @@ def log_desc(pid):
 
 @bp.route("/stream/<pid>")
 def stream(pid):
+    """Stream the download log data"""
     logfile = WORKDIR + "/" + pid + ".log"
-
-    # def generate():
-    #     yield "Log data..."
-    #     with open(logfile, "r") as f:
-    #         while True:
-    #             yield f.read(1024)
 
     def generate():
         for line in Pygtail(logfile, every_n=1):
-            yield "data:" + str(line) + "\n\n"
+            data = "data:" + str(line) + "\n\n"
+            if "nohup:" not in data:
+                yield data
 
     return Response(generate(), mimetype="text/event-stream")
 
@@ -93,8 +95,7 @@ def download_video():
     if not validate_input(path):
         success = False
 
-    ytargs = path + ' -o "%(title)s.%(ext)s"'
-    print(ytargs)
+    ytargs = quote(path) + ' -o "%(title)s.%(ext)s"'
     workdir = WORKDIR
     pid = None
 
@@ -107,11 +108,13 @@ def download_video():
 
         os.chdir(workdir)
 
-        # Fire and forget for now
+        # Use a timestamp to refer to the download logs
+        # Redirct to the logs page to watch progress
         cmd = quote("yt-dlp")
         pid = str(int(datetime.now().timestamp()))
         job_log = pid + ".log"
-        command = f"nohup {cmd} {ytargs} && echo 'Download Complete' > {job_log}"
+        command = f"nohup {cmd} {ytargs} && echo 'Download Complete' >> {job_log}"
+        app.logger.info(f"Running command: {command}")
         subprocess.Popen(
             command,
             shell=True,
@@ -122,7 +125,7 @@ def download_video():
         os.chdir(workdir)
 
     if pid:
-        return redirect(url_for("bp.send_report", pid=pid))
+        return redirect(url_for("bp.render_live_logs", pid=pid))
     else:
         return render_template("index.html")
 

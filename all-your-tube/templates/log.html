@@ -17,7 +17,7 @@
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       if (xhr.readyState == XMLHttpRequest.DONE) {
-        log_desc.textContent = xhr.responseText;
+        desc.textContent = xhr.responseText;
       }
     }
     xhr.open('GET', '{{ url_for('bp.log_desc', pid=pid) }}');
