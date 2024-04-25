@@ -97,7 +97,9 @@ def download_video():
     if not validate_input(path):
         success = False
 
-    ytargs = quote(path) + ' -o "%(title)s.%(ext)s"'
+    default_params = '-f bestvideo+bestaudio -o "%(title)s.%(ext)s"'
+    yt_env_args = os.environ.get("AYT_YTDLP_ARGS", default_params)
+    ytargs = yt_env_args + " " + quote(path)
     workdir = WORKDIR
     pid = None
 
@@ -133,7 +135,7 @@ def download_video():
         os.chdir(workdir)
 
     if pid:
-        app.logger.info("Redirecting to logs pag for %s", pid)
+        app.logger.info("Redirecting to logs page for %s", pid)
         return redirect(url_for("bp.render_live_logs", pid=pid))
 
     return render_template("index.html")
@@ -147,8 +149,8 @@ def index():
 
 def main():
     """Run Flask server to request yt-dlp commands"""
-    port = int(os.environ.get("PORT", 1424))
-    app.debug = os.environ.get("DEBUG", False)
+    port = int(os.environ.get("AYT_PORT", 1424))
+    app.debug = os.environ.get("AYT_DEBUG", False)
 
     app.register_blueprint(bp, url_prefix=PREFIX)
     app.run(host="0.0.0.0", port=port, threaded=True)
