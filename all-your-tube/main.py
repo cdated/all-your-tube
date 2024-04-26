@@ -7,6 +7,8 @@ import os
 import subprocess
 from datetime import datetime
 from shlex import quote
+from pathlib import Path
+import urllib.parse
 
 from flask import (
     Blueprint,
@@ -22,8 +24,12 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 PREFIX = "/yourtube"
 WORKDIR = os.environ.get("AYT_WORKDIR")
+
 if not WORKDIR:
     raise RuntimeError("AYT_WORKDIR env variable must be set")
+WORKDIR = Path(WORKDIR)
+if not WORKDIR.is_dir():
+    raise RuntimeError(f"AYT_WORKDIR {WORKDIR} does not exist")
 
 bp = Blueprint("bp", __name__, static_folder="static", template_folder="templates")
 app = Flask(__name__)
@@ -48,16 +54,30 @@ def validate_input(val):
     return True
 
 
+def logfile_path(pid, subdir):
+    """Return the logfile for a given PID and subdir"""
+    subdir = urllib.parse.unquote(subdir)
+    if subdir == "default":
+        logfile = WORKDIR / Path(pid + ".log")
+    else:
+        logfile = WORKDIR / Path(subdir) / Path(pid + ".log")
+    if not logfile.is_file():
+        raise RuntimeError(f"Log file {logfile} does not exist")
+    return logfile
+
+
 @bp.route("/logs/<pid>")
 def render_live_logs(pid):
     """Render log page"""
-    return render_template("log.html", pid=pid)
+    subdir = request.args.get("subdir", "default")
+    return render_template("log.html", pid=pid, subdir=subdir)
 
 
 @bp.route("/log_desc/<pid>")
 def log_desc(pid):
     """Get the first 'download' line from the logs to describe the job."""
-    logfile = WORKDIR + "/" + pid + ".log"
+    subdir = request.args.get("subdir")
+    logfile = logfile_path(pid, subdir)
 
     with open(logfile, "r", encoding="utf-8") as f:
         while True:
@@ -72,10 +92,11 @@ def log_desc(pid):
 @bp.route("/stream/<pid>")
 def stream(pid):
     """Stream the download log data"""
-    logfile = WORKDIR + "/" + pid + ".log"
+    subdir = request.args.get("subdir")
+    logfile = logfile_path(pid, subdir)
 
     def generate():
-        for line in Pygtail(logfile, every_n=1):
+        for line in Pygtail(str(logfile), every_n=1):
             data = "data:" + str(line) + "\n\n"
             if "nohup:" not in data:
                 yield data
@@ -91,7 +112,7 @@ def download_video():
 
     success = True
 
-    if target_dir and "/" in target_dir:
+    if target_dir and ".." in target_dir:
         success = False
 
     if not validate_input(path):
@@ -105,10 +126,12 @@ def download_video():
 
     if success and (path and "http" in path):
         if target_dir:
-            workdir += target_dir.strip()
+            workdir = workdir / Path(target_dir)
+        else:
+            target_dir = "default"
 
-        if not os.path.exists(workdir):
-            os.mkdir(workdir)
+        if not workdir.is_dir():
+            workdir.mkdir(mode=0o774, parents=True, exist_ok=True)
 
         os.chdir(workdir)
 
@@ -134,9 +157,11 @@ def download_video():
         )
         os.chdir(workdir)
 
+    subdir = urllib.parse.quote_plus(target_dir)
+
     if pid:
         app.logger.info("Redirecting to logs page for %s", pid)
-        return redirect(url_for("bp.render_live_logs", pid=pid))
+        return redirect(url_for("bp.render_live_logs", pid=pid, subdir=subdir))
 
     return render_template("index.html")
 
