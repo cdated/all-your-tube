@@ -28,6 +28,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+cookie
 deploy.env
 .env
 .venv
