@@ -118,7 +118,9 @@ def download_video():
     if not validate_input(path):
         success = False
 
-    default_params = '-f bestvideo+bestaudio -o "%(title)s.%(ext)s"'
+    default_params = (
+        '-f bestvideo+bestaudio -o "%(title)s.%(ext)s" --download-archive archive.txt'
+    )
     yt_env_args = os.environ.get("AYT_YTDLP_ARGS", default_params)
     ytargs = yt_env_args + " " + quote(path)
     workdir = WORKDIR
@@ -140,7 +142,7 @@ def download_video():
         cmd = quote("yt-dlp")
         pid = str(int(datetime.now().timestamp()))
         job_log = pid + ".log"
-        command = f"nohup {cmd} {ytargs} >> {job_log} && echo 'Download Complete' >> {job_log}"
+        command = f"nohup {cmd} {ytargs} &>> {job_log} && echo 'Download Complete' &>> {job_log}"
         app.logger.info("Running command: %s", command)
 
         with open(job_log, "w", encoding="utf-8") as f:
@@ -174,11 +176,13 @@ def index():
 
 def main():
     """Run Flask server to request yt-dlp commands"""
+
+    host = os.environ.get("AYT_HOST", "0.0.0.0")
     port = int(os.environ.get("AYT_PORT", 1424))
     app.debug = os.environ.get("AYT_DEBUG", False)
 
     app.register_blueprint(bp, url_prefix=PREFIX)
-    app.run(host="0.0.0.0", port=port, threaded=True)
+    app.run(host=host, port=port, threaded=True)
 
 
 if __name__ == "__main__":
