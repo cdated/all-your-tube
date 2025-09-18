@@ -51,7 +51,39 @@ export AYT_PORT=8080
 
 ## Usage
 
-### Running the Application
+### Running with Docker (Recommended)
+
+**Build and run with Docker:**
+
+```bash
+# Build the image
+docker build -t all-your-tube .
+
+# Run the container
+docker run -d \
+  --name all-your-tube \
+  -p 1424:1424 \
+  -v $(pwd)/downloads:/app/downloads \
+  all-your-tube
+```
+
+**Using Docker Compose:**
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  all-your-tube:
+    build: .
+    ports:
+      - "1424:1424"
+    volumes:
+      - ./downloads:/app/downloads
+    environment:
+      - AYT_WORKDIR=/app/downloads
+```
+
+### Running Locally
 
 **Using the launch script (recommended):**
 
