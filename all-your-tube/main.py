@@ -5,20 +5,13 @@ Collect yt-dlp parameters through a web form using Flask.
 import logging
 import os
 import subprocess
-from datetime import datetime
-from shlex import quote
-from pathlib import Path
 import urllib.parse
+from datetime import datetime
+from pathlib import Path
+from shlex import quote
 
-from flask import (
-    Blueprint,
-    Flask,
-    Response,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, Flask, Response, redirect, render_template,
+                   request, url_for)
 from pygtail import Pygtail
 from werkzeug.middleware.proxy_fix import ProxyFix
 
