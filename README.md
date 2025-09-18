@@ -62,7 +62,7 @@ export AYT_PORT=8080
 **Using Poetry directly:**
 
 ```bash
-poetry run python all-your-tube/main.py
+poetry run all-your-tube
 ```
 
 ### Accessing the Web Interface
@@ -81,19 +81,19 @@ poetry run python all-your-tube/main.py
 **Linting:**
 
 ```bash
-poetry run pylint all-your-tube/main.py
+poetry run pylint src/all_your_tube/
 ```
 
 **Code formatting:**
 
 ```bash
-poetry run black all-your-tube/main.py
+poetry run black src/
 ```
 
 **Import sorting:**
 
 ```bash
-poetry run isort all-your-tube/main.py
+poetry run isort src/
 ```
 
 ### Dependency Management
@@ -114,10 +114,11 @@ poetry update
 
 ### Core Components
 
-- **Main Application** (`all-your-tube/main.py`): Single-file Flask
+- **Main Application** (`src/all_your_tube/app.py`): Single-file Flask
   application
-- **Templates** (`all-your-tube/templates/`): HTML templates for the web
+- **Templates** (`src/all_your_tube/templates/`): HTML templates for the web
   interface
+- **Static Files** (`src/all_your_tube/static/`): CSS and other static assets
 
 ### URL Structure
 

@@ -1,9 +1,13 @@
 [tool.poetry]
 name = "all-your-tube"
-version = "0.1.0"
-description = "UI for yt-dlp"
+version = "1.0.0"
+description = "A simple Flask web UI for yt-dlp"
 authors = ["Brandon T. Fields <brandon@cdated.com>"]
 readme = "README.md"
+packages = [{include = "all_your_tube", from = "src"}]
+
+[tool.poetry.scripts]
+all-your-tube = "all_your_tube.app:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"

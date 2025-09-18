@@ -10,10 +10,11 @@ all-your-tube is a simple Flask web UI for yt-dlp (YouTube downloader). The appl
 
 ### Core Components
 
-- **Main Application** (`all-your-tube/main.py`): Single-file Flask application with all routes and logic
-- **Templates** (`all-your-tube/templates/`): HTML templates for the web interface
+- **Main Application** (`src/all_your_tube/app.py`): Single-file Flask application with all routes and logic
+- **Templates** (`src/all_your_tube/templates/`): HTML templates for the web interface
   - `index.html`: Main download form
   - `log.html`: Real-time log streaming page
+- **Static Files** (`src/all_your_tube/static/`): CSS and other static assets
 - **Configuration**: Environment variables control behavior (see Environment Variables section)
 
 ### Key Functionality
@@ -31,19 +32,19 @@ all-your-tube is a simple Flask web UI for yt-dlp (YouTube downloader). The appl
 ./launch.sh
 
 # Direct poetry execution
-poetry run python all-your-tube/main.py
+poetry run all-your-tube
 ```
 
 ### Code Quality Tools
 ```bash
 # Linting with pylint
-poetry run pylint all-your-tube/main.py
+poetry run pylint src/all_your_tube/
 
 # Code formatting with black
-poetry run black all-your-tube/main.py
+poetry run black src/
 
 # Import sorting with isort
-poetry run isort all-your-tube/main.py
+poetry run isort src/
 ```
 
 ### Dependency Management
@@ -78,11 +79,14 @@ The application uses a URL prefix `/yourtube` for all routes. Main routes:
 ## File Structure
 
 ```
-all-your-tube/
-├── main.py              # Main Flask application
-└── templates/
-    ├── index.html       # Download form
-    └── log.html         # Log streaming page
+src/
+└── all_your_tube/
+    ├── __init__.py      # Package initialization
+    ├── app.py           # Main Flask application
+    ├── templates/       # Jinja2 templates
+    │   ├── index.html   # Download form
+    │   └── log.html     # Log streaming page
+    └── static/          # Static assets (CSS, etc.)
 ```
 
 ## Dependencies

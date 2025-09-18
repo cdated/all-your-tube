@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-poetry run python all-your-tube/main.py
+poetry run all-your-tube
