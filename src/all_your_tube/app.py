@@ -14,6 +14,7 @@ from flask import (
     Blueprint,
     Flask,
     Response,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -97,12 +98,15 @@ def download_video():
     target_dir = request.form.get("directory")
 
     success = True
+    error_message = None
 
     if target_dir and ".." in target_dir:
         success = False
+        error_message = "Invalid directory path"
 
     if not validate_input(path):
         success = False
+        error_message = "Invalid URL format"
 
     default_params = (
         '-f bestvideo+bestaudio -o "%(title)s.%(ext)s" --download-archive archive.txt'
@@ -124,7 +128,6 @@ def download_video():
         os.chdir(workdir)
 
         # Use a timestamp to refer to the download logs
-        # Redirct to the logs page to watch progress
         cmd = quote("yt-dlp")
         pid = str(int(datetime.now().timestamp()))
         job_log = pid + ".log"
@@ -146,8 +149,24 @@ def download_video():
             start_new_session=True,
         )
 
-    subdir = urllib.parse.quote_plus(target_dir)
+    # Check if this is an AJAX request
+    if request.headers.get('Content-Type') == 'application/json' or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        if success and pid:
+            subdir = urllib.parse.quote_plus(target_dir)
+            return jsonify({
+                'success': True,
+                'pid': pid,
+                'subdir': subdir,
+                'stream_url': url_for('bp.stream', pid=pid, subdir=subdir)
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': error_message or 'Invalid URL or missing required fields'
+            })
 
+    # Fallback for non-AJAX requests (original behavior)
+    subdir = urllib.parse.quote_plus(target_dir)
     if pid:
         app.logger.info("Redirecting to logs page for %s", pid)
         return redirect(url_for("bp.render_live_logs", pid=pid, subdir=subdir))

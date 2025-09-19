@@ -38,7 +38,6 @@
 }
 
 .card:hover {
-    transform: translateY(-2px);
     box-shadow: var(--box-shadow-lg);
 }
 
@@ -67,7 +66,7 @@
 
 /* Button enhancements */
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #1557b0 100%);
+    background: #007cba;
     border: none;
     padding: 0.75rem 2rem;
     font-size: 1.1rem;
@@ -76,8 +75,7 @@
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #1557b0 0%, var(--primary-color) 100%);
-    transform: translateY(-1px);
+    background: #005a8b;
     box-shadow: var(--box-shadow-lg);
 }
 
