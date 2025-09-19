@@ -1,29 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-  <meta charset="utf-8">
-  <meta http-equiv="pragma" content="no-cache">
-  <meta http-equiv="expires" content="-1">
 
-  <head>
-    <title>All Your Tube</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-
-
+<head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-  </head>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="-1">
 
-  <body>
-    <p>
-      <div class="container-fluid col-xs-12 col-sm-6 col-sm-offset-3" align="left">
-        <form method="POST" action="{{url_prefix}}/save" target="_blank">
-          YouTube Url: <input class="form-control" type="text" name="url"><br />
-          Sub Directory (/mnt/kurama/plex/all_your_tube): <input class="form-control" type="text" name="directory" placeholder="Optional"><br />
-          <button type="submit" value="Submit" class="btn btn-primary btn-sm">Submit</button>
-        </form>
-      </div>
-    </p>
-  </body>
+    <title>All Your Tube - Video Downloader</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+    <div class="container-fluid bg-gradient min-vh-100">
+        <!-- Header -->
+        <header class="py-4 mb-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h1 class="display-4 fw-bold text-danger mb-0">
+                            <i class="fas fa-play-circle me-3"></i>All Your Tube
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-xl-6">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-body p-5">
+                            <form method="POST" action="{{url_prefix}}/save" target="_blank" class="needs-validation"
+                                novalidate>
+                                <div class="mb-4">
+                                    <label for="url" class="form-label fw-semibold">
+                                        <i class="fab fa-youtube text-danger me-2"></i>Video URL
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-link"></i>
+                                        </span>
+                                        <input type="url" class="form-control form-control-lg" id="url" name="url"
+                                            placeholder="https://www.youtube.com/watch?v=..." required>
+                                        <div class="invalid-feedback">
+                                            Please provide a valid video URL.
+                                        </div>
+                                    </div>
+                                    <div class="form-text">
+                                        Supports YouTube, Vimeo, and many other video platforms
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="directory" class="form-label fw-semibold">
+                                        <i class="fas fa-folder text-warning me-2"></i>Subdirectory
+                                        <span class="badge bg-secondary ms-1">Optional</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-folder-open"></i>
+                                        </span>
+                                        <input type="text" class="form-control form-control-lg" id="directory"
+                                            name="directory" placeholder="e.g., Music/Artists, Educational/Science">
+                                    </div>
+                                    <div class="form-text">
+                                        Organize your downloads into custom folders
+                                    </div>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg fw-semibold">
+                                        <i class="fas fa-download me-2"></i>Start Download
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="container mt-5 pt-4">
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <p class="text-white-50 small mb-0">
+                        Powered by yt-dlp • Built with Flask
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Form Validation -->
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+</body>
+
 </html>
