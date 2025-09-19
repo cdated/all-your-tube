@@ -100,13 +100,34 @@ def cleanup_stream(stream_id):
         del log_observers[stream_id]
 
 
-def generate_log_stream(stream_id, log_file):
+def generate_log_stream(stream_id, log_file, app_logger):
     """Generate log stream data for Server-Sent Events"""
+
+    # Check if log file exists
+    if not log_file.exists():
+        yield "data: Log file not found. The download may not have started or the file was moved.\n\n"
+        yield "data: Expected location: " + str(log_file) + "\n\n"
+        yield "data: ---^-^---\n\n"
+        return
+
+    is_completed = False
+    with open(log_file, "r", encoding="utf-8") as f:
+        app_logger.debug("checking completed")
+        content = f.read()
+        is_completed = "Download Complete" in content
+        logger.debug("found completed")
+        for line in content.split("\n"):
+            line = line.rstrip("\n\r")
+            if line and "nohup:" not in line:
+                yield f"data: {line}\n\n"
+
+    app_logger.debug(f"is completed {is_completed}")
+    if is_completed:
+        return
+
+    # For active downloads, use file monitoring
     log_queue = Queue()
-
-    # Store the queue for this stream
     active_streams[stream_id] = log_queue
-
     try:
         # Start monitoring the log file
         observer, _ = start_log_monitoring(stream_id, log_queue, log_file)
@@ -126,7 +147,7 @@ def generate_log_stream(stream_id, log_file):
                     if "Download Complete" in line:
                         break
                 except Empty:
-                    # Send heartbeat to keep connection alive
+                    # During download, send heartbeat to keep connection alive
                     yield "data: \n\n"
                     continue
 

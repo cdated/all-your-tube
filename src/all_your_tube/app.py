@@ -63,8 +63,6 @@ def log_filepath(pid, subdir):
         logfile = WORKDIR / Path(pid + ".log")
     else:
         logfile = WORKDIR / Path(subdir) / Path(pid + ".log")
-    if not logfile.is_file():
-        raise RuntimeError(f"Log file {logfile} does not exist")
     return logfile
 
 
@@ -83,7 +81,7 @@ def stream(pid):
     log_file = log_filepath(pid, subdir)
 
     response = Response(
-        log_monitoring.generate_log_stream(stream_id, log_file),
+        log_monitoring.generate_log_stream(stream_id, log_file, app.logger),
         mimetype="text/event-stream",
     )
     response.headers["Cache-Control"] = "no-cache"

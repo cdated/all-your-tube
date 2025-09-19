@@ -118,7 +118,7 @@
             desc.textContent = "Status: " + event.data;
         }
 
-        if (event.data == "Download Complete") {
+        if (event.data == "Download Complete" || event.data == "---^-^---") {
             source.close();
             statusIndicator.textContent = '● Complete';
             statusIndicator.className = 'status-indicator status-connected';
