@@ -84,10 +84,7 @@
     // New content indicator click
     newContentIndicator.addEventListener('click', scrollToBottom);
 
-    // Get the description of the download event
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '{{ url_for('bp.log_desc', pid=pid, subdir=subdir) }}');
-    xhr.send();
+    desc.textContent = "Status: Starting...";
 
     // Get the logs data from the server
     var source = new EventSource("{{ url_for('bp.stream', pid=pid, subdir=subdir) }}");
