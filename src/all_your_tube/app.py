@@ -143,7 +143,7 @@ def download_video():
             shell=True,
             stderr=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,
-            preexec_fn=os.setpgrp,
+            start_new_session=True,
         )
         os.chdir(workdir)
 
