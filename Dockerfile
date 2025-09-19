@@ -18,12 +18,17 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock* README.md ./
 COPY src/ ./src/
 
-# Configure poetry: don't create virtual env, install dependencies
+# Configure poetry: don't create virtual env, install dependencies only (no dev)
 RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi
+    && poetry install --only=main --no-interaction --no-ansi
 
-# Create work directory for downloads
-RUN mkdir -p /app/downloads
+# Create non-root user first
+RUN useradd -m -u 1000 app
+
+# Create work and log directories with proper ownership
+RUN mkdir -p /app/downloads /app/logs /app/downloads/logs && \
+    chown -R app:app /app && \
+    chmod -R 755 /app
 
 # Set environment variables
 ENV AYT_WORKDIR=/app/downloads
@@ -33,9 +38,9 @@ ENV AYT_PORT=1424
 # Expose port
 EXPOSE 1424
 
-# Create non-root user
-RUN useradd -m -u 1000 app && chown -R app:app /app
+# Switch to non-root user
 USER app
 
-# Run the application
-CMD ["poetry", "run", "all-your-tube"]
+# Add src to Python path and run the application
+ENV PYTHONPATH=/app/src
+CMD ["python", "-m", "all_your_tube.app"]
