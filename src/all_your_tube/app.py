@@ -132,18 +132,19 @@ def download_video():
         app.logger.info("Running command: %s", command)
 
         with open(job_log, "w", encoding="utf-8") as f:
-            f.write("Starting...")
+            f.write("Starting...\n")
 
         # pylint: disable=consider-using-with
-        # pylint: disable=subprocess-popen-preexec-fn
         subprocess.Popen(
-            command,
-            shell=True,
+            [
+                "/bin/bash",
+                "-c",
+                f"yt-dlp {ytargs} >> {job_log} 2>&1 && echo 'Download Complete' >> {job_log}",
+            ],
             stderr=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,
             start_new_session=True,
         )
-        os.chdir(workdir)
 
     subdir = urllib.parse.quote_plus(target_dir)
 

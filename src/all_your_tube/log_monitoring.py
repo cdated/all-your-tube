@@ -33,11 +33,7 @@ class LogFileHandler(FileSystemEventHandler):
         """Get end of file offset"""
         if self.log_file_path.exists():
             with open(self.log_file_path, "r", encoding="utf-8") as f:
-                existing_lines = f.readlines()
-                for line in existing_lines:
-                    if "nohup:" in line:
-                        continue
-                    self.log_queue.put(line)
+                f.seek(0, 2)
                 self.file_position = f.tell()
 
     def on_modified(self, event):
@@ -105,8 +101,10 @@ def generate_log_stream(stream_id, log_file, app_logger):
 
     # Check if log file exists
     if not log_file.exists():
-        yield "data: Log file not found. The download may not have started or the file was moved.\n\n"
+        yield "data: Log file not found.\n\n"
+        yield "data: The download may not have started or the file was moved.\n\n"
         yield "data: Expected location: " + str(log_file) + "\n\n"
+        yield "data: \n\n"
         yield "data: ---^-^---\n\n"
         return
 
