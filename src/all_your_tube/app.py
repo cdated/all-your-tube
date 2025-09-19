@@ -8,7 +8,6 @@ import subprocess
 import urllib.parse
 from datetime import datetime
 from pathlib import Path
-from queue import Empty, Queue
 from shlex import quote
 
 from flask import (
@@ -20,9 +19,9 @@ from flask import (
     request,
     url_for,
 )
-from watchdog.events import FileSystemEventHandler
-from watchdog.observers import Observer
 from werkzeug.middleware.proxy_fix import ProxyFix
+
+from . import log_monitoring
 
 PREFIX = "/yourtube"
 WORKDIR = os.environ.get("AYT_WORKDIR")
@@ -37,9 +36,6 @@ bp = Blueprint("bp", __name__, static_folder="static", template_folder="template
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
-# Global dictionary to manage active log streams
-active_streams = {}
-log_observers = {}
 
 # Configure Flask logging
 app.logger.setLevel(logging.INFO)  # Set log level to INFO
@@ -79,121 +75,17 @@ def render_live_logs(pid):
     return render_template("log.html", pid=pid, subdir=subdir)
 
 
-class LogFileHandler(FileSystemEventHandler):
-    """Handle filesystem events for log files"""
-
-    def __init__(self, log_queue, log_file_path):
-        super().__init__()
-        self.log_queue = log_queue
-        self.log_file_path = Path(log_file_path)
-        self.file_position = 0
-        self._read_existing_content()
-
-    def _read_existing_content(self):
-        """Get end of file offset"""
-        if self.log_file_path.exists():
-            with open(self.log_file_path, "r", encoding="utf-8") as f:
-                existing_lines = f.readlines()
-                for line in existing_lines:
-                    if "nohup:" in line:
-                        continue
-                    self.log_queue.put(line)
-                self.file_position = f.tell()
-
-    def on_modified(self, event):
-        """Handle file modification events"""
-        if event.is_directory:
-            return
-
-        if Path(event.src_path) == self.log_file_path:
-            self._read_new_lines()
-
-    def _read_new_lines(self):
-        """Read only new lines from the log file"""
-        try:
-            if not self.log_file_path.exists():
-                return
-
-            with open(self.log_file_path, "r", encoding="utf-8") as f:
-                f.seek(self.file_position)
-                new_lines = f.readlines()
-                self.file_position = f.tell()
-
-                for line in new_lines:
-                    line = line.rstrip("\n\r")
-                    if line and "nohup:" not in line:
-                        self.log_queue.put(line)
-
-        except (IOError, OSError) as e:
-            app.logger.error("Error reading log file %s: %s", self.log_file_path, e)
-
-
-def start_log_monitoring(stream_id, log_queue, log_file):
-    """Start monitoring a log file for changes"""
-    # Stop existing observers if any
-    if stream_id in log_observers:
-        log_observers[stream_id].stop()
-        log_observers[stream_id].join()  # Wait until it actually stops
-
-    # Create new observer
-    observer = Observer()
-    handler = LogFileHandler(log_queue, log_file)
-
-    # Watch the directory containing the log file
-    watch_dir = log_file.parent
-    observer.schedule(handler, str(watch_dir), recursive=False)
-    observer.start()
-
-    log_observers[stream_id] = observer
-    app.logger.info("Started monitoring log file: %s", log_file)
-
-    return observer, handler
-
-
 @bp.route("/stream/<pid>")
 def stream(pid):
     """Stream the download log data using file watching"""
     subdir = request.args.get("subdir")
     stream_id = f"{pid}_{subdir or 'default'}"
+    log_file = log_filepath(pid, subdir)
 
-    def generate():
-        log_queue = Queue()
-
-        # Store the queue for this stream
-        active_streams[stream_id] = log_queue
-
-        # Start monitoring the log file
-        log_file = log_filepath(pid, subdir)
-        observer, _ = start_log_monitoring(stream_id, log_queue, log_file)
-
-        if not observer:
-            yield "data: Error: Could not start log monitoring\n\n"
-            return
-
-        # Read any existing content first
-        if log_file.exists():
-            while True:
-                try:
-                    line = log_queue.get(timeout=30)
-                    yield f"data: {line}\n\n"
-
-                    # Check for completion
-                    if "Download Complete" in line:
-                        break
-                except Empty:
-                    # Send heartbeat to keep connection alive
-                    yield "data: \n\n"
-                    continue
-
-        # Cleanup
-        if stream_id in active_streams:
-            del active_streams[stream_id]
-        if stream_id in log_observers:
-            log_observers[stream_id].stop()
-            log_observers[stream_id].join()
-            del log_observers[stream_id]
-
-    response = Response(generate(), mimetype="text/event-stream")
+    response = Response(
+        log_monitoring.generate_log_stream(stream_id, log_file),
+        mimetype="text/event-stream",
+    )
     response.headers["Cache-Control"] = "no-cache"
     response.headers["X-Accel-Buffering"] = "no"
 

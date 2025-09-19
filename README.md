@@ -146,10 +146,11 @@ poetry update
 
 ### Core Components
 
-- **Main Application** (`src/all_your_tube/app.py`): Single-file Flask
-  application
-- **Templates** (`src/all_your_tube/templates/`): HTML templates for the web
-  interface
+- **Main Application** (`src/all_your_tube/app.py`): Flask application with
+  routes and core logic
+- **Log Monitoring** (`src/all_your_tube/log_monitoring.py`): Real-time file
+  monitoring using watchdog
+- **Templates** (`src/all_your_tube/templates/`): HTML templates for the web interface
 - **Static Files** (`src/all_your_tube/static/`): CSS and other static assets
 
 ### URL Structure
@@ -165,7 +166,7 @@ All routes use the `/yourtube` prefix:
 ## Dependencies
 
 - Flask: Web framework
-- pygtail: Log file tailing for live updates
+- watchdog: Filesystem event monitoring for real-time log updates
 - werkzeug: WSGI utilities and proxy handling
 - yt-dlp: YouTube downloader (external dependency)
 
