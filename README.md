@@ -1,17 +1,32 @@
-# all-your-tube
+# All Your Tube
 
-A simple Flask web UI for yt-dlp (YouTube downloader) that provides a web
-form to submit download requests and stream real-time download progress logs.
+A minimalist web interface for yt-dlp that makes video downloading simple and
+accessible. Download videos to your server or locally from YouTube, Vimeo,
+etc. through an intuitive web UI.
 
 ![Demo](docs/all-your-tube-demo.gif)
+
+## What Makes It Special
+
+- **Download Links**: Create links for client-side downloads.
+- **Real-Time Progress**: Watch downloads happen live with streaming logs
+- **Organized Downloads**: Organize videos into custom folders
+- **Zero Client Software**: Just a web browser - works on any device
+
+## Perfect For
+
+- **Media Archivists**: Batch download and organize video collections
+- **Content Creators**: Download reference material and inspiration
+- **Educators**: Save educational content for offline viewing
+- **Self-Hosters**: Run your own private video download service
 
 ## Features
 
 - Web-based interface for yt-dlp downloads
-- Real-time log streaming using Server-Sent Events (SSE)
-- Background download processing
+- Real-time log streaming and progress monitoring
 - Directory organization for downloads
-- Configurable yt-dlp arguments
+- Download link generation for completed videos
+- Configurable yt-dlp arguments and output formats
 
 ## Installation
 
@@ -101,12 +116,16 @@ poetry run all-your-tube
 
 ### Accessing the Web Interface
 
-1. Open your browser and navigate to `http://localhost:1424/yourtube/` (or
-   your configured host/port)
-2. Enter a YouTube URL in the form
+1. Open your browser and navigate to `http://localhost:1424/yourtube/`
+   (or your configured host/port)
+2. Enter a video URL from YouTube, Vimeo, or any supported platform
 3. Optionally specify a subdirectory for organization
-4. Click "Download" to start the process
-5. View real-time logs by following the provided link
+4. Choose your download method:
+   - **Start Download**: Immediate download videos and playlists with
+     real-time progress logs.
+   - **Create Download Link**: Generates download links for remote
+     clients.
+5. Monitor progress and download completed files
 
 ## Development
 
@@ -150,20 +169,30 @@ poetry update
 
 - **Main Application** (`src/all_your_tube/app.py`): Flask application with
   routes and core logic
-- **Log Monitoring** (`src/all_your_tube/log_monitoring.py`): Real-time file
-  monitoring using watchdog
-- **Templates** (`src/all_your_tube/templates/`): HTML templates for the web interface
-- **Static Files** (`src/all_your_tube/static/`): CSS and other static assets
+- **Queue System** (`src/all_your_tube/queue.py`): Background video
+  processing and download management
+- **Log Monitoring** (`src/all_your_tube/log_monitoring.py`): Real-time
+  file monitoring using watchdog
+- **Templates** (`src/all_your_tube/templates/`): HTML templates with pixel art styling
+- **Static Files** (`src/all_your_tube/static/`): CSS and JavaScript for the web interface
 
 ### URL Structure
 
 All routes use the `/yourtube` prefix:
 
+**Main Interface:**
+
 - `/yourtube/`: Main download form
-- `/yourtube/save`: POST endpoint for download submission
+- `/yourtube/save`: POST endpoint for immediate downloads
 - `/yourtube/logs/<pid>`: Live log viewing page
 - `/yourtube/stream/<pid>`: SSE endpoint for log streaming
-- `/yourtube/log_desc/<pid>`: Get download description from logs
+
+**Queue System:**
+
+- `/yourtube/queue-download`: POST endpoint to queue high-quality downloads
+- `/yourtube/queue-status/<id>`: Get status of queued download
+- `/yourtube/queue-list`: List all queue items
+- `/yourtube/queue-download-file/<id>`: Download completed video file
 
 ## Dependencies
 
