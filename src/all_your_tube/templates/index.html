@@ -15,71 +15,57 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/log.css') }}">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/log.css') }}"> -->
 </head>
 
 <body>
-    <div
-        style="min-height: 100vh; background: #87ceeb; background-image: radial-gradient(circle at 25% 25%, #98d8f4 0%, transparent 50%), radial-gradient(circle at 75% 75%, #76c1e8 0%, transparent 50%); padding: 20px;">
+    <div class="main-container">
         <!-- Header -->
-        <header style="margin-bottom: 30px; text-align: center;">
-            <div
-                style="background: #ff6b6b; border: 4px solid #000; padding: 20px; box-shadow: 6px 6px 0px #000; display: inline-block;">
-                <h1
-                    style="color: #fff; font-family: 'Courier New', monospace; font-size: 32px; font-weight: bold; text-shadow: 2px 2px 0px #000; margin: 0;">
+        <header class="main-header">
+            <div class="header-banner">
+                <h1 class="header-title">
                     ▶ ALL YOUR TUBE ◀
                 </h1>
-                <div
-                    style="color: #ffeeaa; font-family: 'Courier New', monospace; font-size: 14px; margin-top: 8px; text-shadow: 1px 1px 0px #000;">
+                <div class="header-subtitle">
                 </div>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main style="max-width: 600px; margin: 0 auto;">
-            <div style="background: #f0f0f0; border: 4px solid #000; padding: 30px; box-shadow: 4px 4px 0px #000;">
+        <main class="main-content">
+            <div class="main-form-card">
                 <!-- Pixel art decorative border -->
-                <div
-                    style="border: 2px dashed #666; padding: 20px; background: repeating-linear-gradient(45deg, #fff 0px, #fff 4px, #f9f9f9 4px, #f9f9f9 8px);">
+                <div class="form-inner">
                     <form id="downloadForm" method="POST" action="{{url_prefix}}/save" class="needs-validation"
                         novalidate>
-                        <div style="margin-bottom: 25px;">
-                            <label for="url"
-                                style="display: block; margin-bottom: 8px; font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; color: #000; text-shadow: 1px 1px 0px rgba(255,255,255,0.5);">
+                        <div class="form-group">
+                            <label for="url" class="form-label">
                                 ▼ VIDEO URL ▼
                             </label>
                             <input type="url" id="url" name="url" placeholder="https://www.youtube.com/watch?v=..."
-                                required
-                                style="width: 100%; padding: 12px; font-family: 'Courier New', monospace; font-size: 14px; border: 3px solid #000; border-radius: 0; box-shadow: inset 2px 2px 0px #666; background: #fff;">
-                            <div class="invalid-feedback"
-                                style="color: #ff0000; font-family: 'Courier New', monospace; font-size: 12px; margin-top: 5px;">
+                                required class="form-input">
+                            <div class="invalid-feedback error-text">
                                 ✗ INVALID URL FORMAT!
                             </div>
-                            <div
-                                style="color: #666; font-family: 'Courier New', monospace; font-size: 11px; margin-top: 8px; background: #ffffcc; padding: 4px; border: 1px solid #cccc99;">
+                            <div class="help-text">
                                 ★ SUPPORTS: YouTube, Vimeo & More! ★
                             </div>
                         </div>
 
-                        <div style="margin-bottom: 25px;">
-                            <label for="directory"
-                                style="display: block; margin-bottom: 8px; font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; color: #000; text-shadow: 1px 1px 0px rgba(255,255,255,0.5);">
+                        <div class="form-group">
+                            <label for="directory" class="form-label">
                                 ▼ FOLDER NAME ▼
-                                <span
-                                    style="background: #888; color: #fff; padding: 2px 6px; font-size: 10px; margin-left: 8px;">[OPTIONAL]</span>
+                                <span class="optional-badge">[OPTIONAL]</span>
                             </label>
                             <input type="text" id="directory" name="directory"
-                                placeholder="Music/Artists or Educational/Science"
-                                style="width: 100%; padding: 12px; font-family: 'Courier New', monospace; font-size: 14px; border: 3px solid #000; border-radius: 0; box-shadow: inset 2px 2px 0px #666; background: #fff;">
-                            <div
-                                style="color: #666; font-family: 'Courier New', monospace; font-size: 11px; margin-top: 8px; background: #ccffcc; padding: 4px; border: 1px solid #99cc99;">
+                                placeholder="Music/Artists or Educational/Science" class="form-input">
+                            <div class="help-text-green">
                                 ♦ ORGANIZE YOUR DOWNLOADS! ♦
                             </div>
                         </div>
 
-                        <div style="text-align: center; margin-top: 30px;">
-                            <button type="submit"
-                                style="font-family: 'Courier New', monospace; font-size: 16px; font-weight: bold; background: #4a90e2; color: #fff; border: 3px solid #000; padding: 15px 30px; text-shadow: 1px 1px 0px #000; box-shadow: 4px 4px 0px #000; cursor: pointer;">
+                        <div class="submit-button-container">
+                            <button type="submit" class="submit-button">
                                 ▶ START DOWNLOAD ◀
                             </button>
                         </div>
@@ -89,77 +75,58 @@
         </main>
 
         <!-- Logging Section -->
-        <section id="loggingSection" style="display: none; max-width: 800px; margin: 40px auto 0;">
-            <div style="background: #f0f0f0; border: 4px solid #000; padding: 20px; box-shadow: 4px 4px 0px #000;">
+        <section id="loggingSection" class="logging-section">
+            <div class="logging-card">
                 <!-- Pixel art header -->
-                <div
-                    style="background: #4a90e2; border: 3px solid #000; padding: 15px; margin-bottom: 20px; box-shadow: 3px 3px 0px #000;">
-                    <div class="log-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        <h2
-                            style="color: #fff; font-family: 'Courier New', monospace; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 0px #000; margin: 0;">
+                <div class="log-header-bar">
+                    <div class="log-header">
+                        <h2 class="log-title">
                             ◆ DOWNLOAD PROGRESS ◆
                         </h2>
-                        <span id="connectionStatus"
-                            style="background: #00ff00; color: #000; border: 2px solid #000; padding: 4px 8px; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold;">
+                        <span id="connectionStatus" class="connection-status">
                             ● READY
                         </span>
                     </div>
                 </div>
 
                 <!-- Control buttons -->
-                <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px;">
-                    <button id="toggleAutoScroll"
-                        style="background: #5cb85c; color: #fff; border: 3px solid #000; padding: 8px 12px; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; text-shadow: 1px 1px 0px #000; box-shadow: 3px 3px 0px #000; cursor: crosshair;">
+                <div class="log-controls">
+                    <button id="toggleAutoScroll" class="log-button log-button-green">
                         ▲ AUTO-SCROLL ▲
                     </button>
-                    <button id="scrollToTop"
-                        style="background: #f0ad4e; color: #fff; border: 3px solid #000; padding: 8px 12px; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; text-shadow: 1px 1px 0px #000; box-shadow: 3px 3px 0px #000; cursor: crosshair;">
+                    <button id="scrollToTop" class="log-button log-button-orange">
                         ▲ TOP ▲
                     </button>
-                    <button id="scrollToBottom"
-                        style="background: #f0ad4e; color: #fff; border: 3px solid #000; padding: 8px 12px; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; text-shadow: 1px 1px 0px #000; box-shadow: 3px 3px 0px #000; cursor: crosshair;">
+                    <button id="scrollToBottom" class="log-button log-button-orange">
                         ▼ BOTTOM ▼
                     </button>
-                    <button id="hideLogging"
-                        style="background: #d9534f; color: #fff; border: 3px solid #000; padding: 8px 12px; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; text-shadow: 1px 1px 0px #000; box-shadow: 3px 3px 0px #000; cursor: crosshair; margin-left: auto;">
+                    <button id="hideLogging" class="log-button log-button-red">
                         ✖ CLOSE ✖
                     </button>
                 </div>
 
                 <!-- Status display -->
-                <div class="status-container"
-                    style="background: #ffffcc; border: 2px solid #000; padding: 10px; margin-bottom: 15px; border-left: 6px solid #ffcc00;">
-                    <div
-                        style="color: #333; font-family: 'Courier New', monospace; font-size: 13px; font-weight: bold;">
+                <div class="status-container status-display">
+                    <div class="status-text">
                         ► <span id="desc">SYSTEM INITIALIZING...</span>
                     </div>
                 </div>
 
                 <!-- Log terminal -->
-                <div id="logs"
-                    style="height: 400px; max-height: 70vh; overflow-y: auto; overflow-x: hidden; background: #000; border: 4px solid #000; box-shadow: inset 3px 3px 0px #333; padding: 12px; position: relative;">
-                    <pre id="output"
-                        style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.3; white-space: pre-wrap; word-wrap: break-word; font-weight: bold; text-shadow: 0 0 2px #00ff00; margin: 0;">
+                <div id="logs" class="log-terminal">
+                    <pre id="output" class="log-output">
                     </pre>
-                    <div id="newContentIndicator" style="position: absolute; bottom: 10px; right: 10px; display: none;">
-                        <button
-                            style="background: #ff6b6b; color: #fff; border: 2px solid #000; padding: 6px 10px; font-family: 'Courier New', monospace; font-size: 10px; font-weight: bold; text-shadow: 1px 1px 0px #000; box-shadow: 2px 2px 0px #000; cursor: crosshair; animation: pixelPulse 1s infinite;">
-                            ● NEW DATA ●
-                        </button>
-                    </div>
                     <!-- Pixel scanlines -->
-                    <div
-                        style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,0,0.02) 2px, rgba(0,255,0,0.02) 4px); pointer-events: none;">
+                    <div class="scanlines">
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Footer -->
-        <footer style="margin-top: 40px; text-align: center;">
-            <div
-                style="background: #333; color: #fff; border: 3px solid #000; padding: 15px; box-shadow: 3px 3px 0px #000; display: inline-block;">
-                <div style="font-family: 'Courier New', monospace; font-size: 12px; text-shadow: 1px 1px 0px #000;">
+        <footer class="main-footer">
+            <div class="footer-card">
+                <div class="footer-text">
                     ◆ POWERED BY YT-DLP ◆ BUILT WITH FLASK ◆
                 </div>
             </div>
@@ -206,7 +173,6 @@
             const scrollTopBtn = document.getElementById('scrollToTop');
             const scrollBottomBtn = document.getElementById('scrollToBottom');
             const statusIndicator = document.getElementById('connectionStatus');
-            const newContentIndicator = document.getElementById('newContentIndicator');
 
             let isUserScrolling = false;
             let hasNewContent = false;
@@ -218,7 +184,6 @@
 
                 if (isAtBottom) {
                     hasNewContent = false;
-                    newContentIndicator.style.display = 'none';
                 }
 
                 setTimeout(function () {
@@ -251,7 +216,6 @@
                     behavior: 'smooth'
                 });
                 hasNewContent = false;
-                newContentIndicator.style.display = 'none';
             });
 
             // Scroll to bottom button
@@ -262,8 +226,6 @@
                 hideLoggingSection();
             });
 
-            // New content indicator
-            newContentIndicator.addEventListener('click', scrollToBottomSmooth);
 
             function scrollToBottomSmooth() {
                 logs.scrollTo({
@@ -271,7 +233,6 @@
                     behavior: 'smooth'
                 });
                 hasNewContent = false;
-                newContentIndicator.style.display = 'none';
             }
 
             // Store references for use in other functions
@@ -282,7 +243,6 @@
                 isUserScrolling: () => isUserScrolling,
                 hasNewContent: hasNewContent,
                 setHasNewContent: (value) => {hasNewContent = value;},
-                newContentIndicator: newContentIndicator
             };
         }
 
@@ -406,7 +366,6 @@
                 } else if (!wasAtBottom) {
                     // Show new content indicator if user has scrolled up
                     window.logElements.setHasNewContent(true);
-                    window.logElements.newContentIndicator.style.display = 'block';
                 }
 
                 // Update description (existing log.css behavior)
