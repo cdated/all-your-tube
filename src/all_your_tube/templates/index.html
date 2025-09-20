@@ -19,111 +19,148 @@
 </head>
 
 <body>
-    <div class="container-fluid bg-gradient min-vh-100">
+    <div
+        style="min-height: 100vh; background: #87ceeb; background-image: radial-gradient(circle at 25% 25%, #98d8f4 0%, transparent 50%), radial-gradient(circle at 75% 75%, #76c1e8 0%, transparent 50%); padding: 20px;">
         <!-- Header -->
-        <header class="py-4 mb-4">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col">
-                        <h1 class="display-4 fw-bold text-danger mb-0">
-                            <i class="fas fa-play-circle me-3"></i>All Your Tube
-                        </h1>
-                    </div>
+        <header style="margin-bottom: 30px; text-align: center;">
+            <div
+                style="background: #ff6b6b; border: 4px solid #000; padding: 20px; box-shadow: 6px 6px 0px #000; display: inline-block;">
+                <h1
+                    style="color: #fff; font-family: 'Courier New', monospace; font-size: 32px; font-weight: bold; text-shadow: 2px 2px 0px #000; margin: 0;">
+                    ▶ ALL YOUR TUBE ◀
+                </h1>
+                <div
+                    style="color: #ffeeaa; font-family: 'Courier New', monospace; font-size: 14px; margin-top: 8px; text-shadow: 1px 1px 0px #000;">
                 </div>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8 col-xl-6">
-                    <div class="card shadow-lg border-0 rounded-4">
-                        <div class="card-body p-5">
-                            <form id="downloadForm" method="POST" action="{{url_prefix}}/save" class="needs-validation"
-                                novalidate>
-                                <div class="mb-4">
-                                    <label for="url" class="form-label fw-semibold">
-                                        <i class="fab fa-youtube text-danger me-2"></i>Video URL
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-link"></i>
-                                        </span>
-                                        <input type="url" class="form-control form-control-lg" id="url" name="url"
-                                            placeholder="https://www.youtube.com/watch?v=..." required>
-                                        <div class="invalid-feedback">
-                                            Please provide a valid video URL.
-                                        </div>
-                                    </div>
-                                    <div class="form-text">
-                                        Supports YouTube, Vimeo, and many other video platforms
-                                    </div>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label for="directory" class="form-label fw-semibold">
-                                        <i class="fas fa-folder text-warning me-2"></i>Subdirectory
-                                        <span class="badge bg-secondary ms-1">Optional</span>
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-folder-open"></i>
-                                        </span>
-                                        <input type="text" class="form-control form-control-lg" id="directory"
-                                            name="directory" placeholder="e.g., Music/Artists, Educational/Science">
-                                    </div>
-                                    <div class="form-text">
-                                        Organize your downloads into custom folders
-                                    </div>
-                                </div>
-
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary btn-lg fw-semibold">
-                                        <i class="fas fa-download me-2"></i>Start Download
-                                    </button>
-                                </div>
-                            </form>
+        <main style="max-width: 600px; margin: 0 auto;">
+            <div style="background: #f0f0f0; border: 4px solid #000; padding: 30px; box-shadow: 4px 4px 0px #000;">
+                <!-- Pixel art decorative border -->
+                <div
+                    style="border: 2px dashed #666; padding: 20px; background: repeating-linear-gradient(45deg, #fff 0px, #fff 4px, #f9f9f9 4px, #f9f9f9 8px);">
+                    <form id="downloadForm" method="POST" action="{{url_prefix}}/save" class="needs-validation"
+                        novalidate>
+                        <div style="margin-bottom: 25px;">
+                            <label for="url"
+                                style="display: block; margin-bottom: 8px; font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; color: #000; text-shadow: 1px 1px 0px rgba(255,255,255,0.5);">
+                                ▼ VIDEO URL ▼
+                            </label>
+                            <input type="url" id="url" name="url" placeholder="https://www.youtube.com/watch?v=..."
+                                required
+                                style="width: 100%; padding: 12px; font-family: 'Courier New', monospace; font-size: 14px; border: 3px solid #000; border-radius: 0; box-shadow: inset 2px 2px 0px #666; background: #fff;">
+                            <div class="invalid-feedback"
+                                style="color: #ff0000; font-family: 'Courier New', monospace; font-size: 12px; margin-top: 5px;">
+                                ✗ INVALID URL FORMAT!
+                            </div>
+                            <div
+                                style="color: #666; font-family: 'Courier New', monospace; font-size: 11px; margin-top: 8px; background: #ffffcc; padding: 4px; border: 1px solid #cccc99;">
+                                ★ SUPPORTS: YouTube, Vimeo & More! ★
+                            </div>
                         </div>
-                    </div>
+
+                        <div style="margin-bottom: 25px;">
+                            <label for="directory"
+                                style="display: block; margin-bottom: 8px; font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; color: #000; text-shadow: 1px 1px 0px rgba(255,255,255,0.5);">
+                                ▼ FOLDER NAME ▼
+                                <span
+                                    style="background: #888; color: #fff; padding: 2px 6px; font-size: 10px; margin-left: 8px;">[OPTIONAL]</span>
+                            </label>
+                            <input type="text" id="directory" name="directory"
+                                placeholder="Music/Artists or Educational/Science"
+                                style="width: 100%; padding: 12px; font-family: 'Courier New', monospace; font-size: 14px; border: 3px solid #000; border-radius: 0; box-shadow: inset 2px 2px 0px #666; background: #fff;">
+                            <div
+                                style="color: #666; font-family: 'Courier New', monospace; font-size: 11px; margin-top: 8px; background: #ccffcc; padding: 4px; border: 1px solid #99cc99;">
+                                ♦ ORGANIZE YOUR DOWNLOADS! ♦
+                            </div>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 30px;">
+                            <button type="submit"
+                                style="font-family: 'Courier New', monospace; font-size: 16px; font-weight: bold; background: #4a90e2; color: #fff; border: 3px solid #000; padding: 15px 30px; text-shadow: 1px 1px 0px #000; box-shadow: 4px 4px 0px #000; cursor: pointer;">
+                                ▶ START DOWNLOAD ◀
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </main>
 
         <!-- Logging Section -->
-        <section id="loggingSection" class="container mt-5" style="display: none;">
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <div class="card shadow-lg border-0 rounded-4">
-                        <div class="card-body p-4">
-                            <div class="log-controls">
-                                <button id="toggleAutoScroll" class="active">Auto-Scroll: ON</button>
-                                <button id="scrollToTop">Scroll to Top</button>
-                                <button id="scrollToBottom">Scroll to Bottom</button>
-                                <button id="hideLogging">Hide Logs</button>
-                                <span id="connectionStatus" class="status-indicator status-connected">●
-                                    Connecting...</span>
-                            </div>
+        <section id="loggingSection" style="display: none; max-width: 800px; margin: 40px auto 0;">
+            <div style="background: #f0f0f0; border: 4px solid #000; padding: 20px; box-shadow: 4px 4px 0px #000;">
+                <!-- Pixel art header -->
+                <div
+                    style="background: #4a90e2; border: 3px solid #000; padding: 15px; margin-bottom: 20px; box-shadow: 3px 3px 0px #000;">
+                    <div class="log-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2
+                            style="color: #fff; font-family: 'Courier New', monospace; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 0px #000; margin: 0;">
+                            ◆ DOWNLOAD PROGRESS ◆
+                        </h2>
+                        <span id="connectionStatus"
+                            style="background: #00ff00; color: #000; border: 2px solid #000; padding: 4px 8px; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold;">
+                            ● READY
+                        </span>
+                    </div>
+                </div>
 
-                            <pre id="desc"></pre>
+                <!-- Control buttons -->
+                <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px;">
+                    <button id="toggleAutoScroll"
+                        style="background: #5cb85c; color: #fff; border: 3px solid #000; padding: 8px 12px; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; text-shadow: 1px 1px 0px #000; box-shadow: 3px 3px 0px #000; cursor: crosshair;">
+                        ▲ AUTO-SCROLL ▲
+                    </button>
+                    <button id="scrollToTop"
+                        style="background: #f0ad4e; color: #fff; border: 3px solid #000; padding: 8px 12px; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; text-shadow: 1px 1px 0px #000; box-shadow: 3px 3px 0px #000; cursor: crosshair;">
+                        ▲ TOP ▲
+                    </button>
+                    <button id="scrollToBottom"
+                        style="background: #f0ad4e; color: #fff; border: 3px solid #000; padding: 8px 12px; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; text-shadow: 1px 1px 0px #000; box-shadow: 3px 3px 0px #000; cursor: crosshair;">
+                        ▼ BOTTOM ▼
+                    </button>
+                    <button id="hideLogging"
+                        style="background: #d9534f; color: #fff; border: 3px solid #000; padding: 8px 12px; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold; text-shadow: 1px 1px 0px #000; box-shadow: 3px 3px 0px #000; cursor: crosshair; margin-left: auto;">
+                        ✖ CLOSE ✖
+                    </button>
+                </div>
 
-                            <div id="logs">
-                                <pre id="output"></pre>
-                                <div id="newContentIndicator" class="new-content-indicator">New content available ↓
-                                </div>
-                            </div>
-                        </div>
+                <!-- Status display -->
+                <div class="status-container"
+                    style="background: #ffffcc; border: 2px solid #000; padding: 10px; margin-bottom: 15px; border-left: 6px solid #ffcc00;">
+                    <div
+                        style="color: #333; font-family: 'Courier New', monospace; font-size: 13px; font-weight: bold;">
+                        ► <span id="desc">SYSTEM INITIALIZING...</span>
+                    </div>
+                </div>
+
+                <!-- Log terminal -->
+                <div id="logs"
+                    style="height: 400px; max-height: 70vh; overflow-y: auto; overflow-x: hidden; background: #000; border: 4px solid #000; box-shadow: inset 3px 3px 0px #333; padding: 12px; position: relative;">
+                    <pre id="output"
+                        style="color: #00ff00; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.3; white-space: pre-wrap; word-wrap: break-word; font-weight: bold; text-shadow: 0 0 2px #00ff00; margin: 0;">
+                    </pre>
+                    <div id="newContentIndicator" style="position: absolute; bottom: 10px; right: 10px; display: none;">
+                        <button
+                            style="background: #ff6b6b; color: #fff; border: 2px solid #000; padding: 6px 10px; font-family: 'Courier New', monospace; font-size: 10px; font-weight: bold; text-shadow: 1px 1px 0px #000; box-shadow: 2px 2px 0px #000; cursor: crosshair; animation: pixelPulse 1s infinite;">
+                            ● NEW DATA ●
+                        </button>
+                    </div>
+                    <!-- Pixel scanlines -->
+                    <div
+                        style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,0,0.02) 2px, rgba(0,255,0,0.02) 4px); pointer-events: none;">
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Footer -->
-        <footer class="container mt-5 pt-4">
-            <div class="row justify-content-center">
-                <div class="col-auto">
-                    <p class="text-white-50 small mb-0">
-                        Powered by yt-dlp • Built with Flask
-                    </p>
+        <footer style="margin-top: 40px; text-align: center;">
+            <div
+                style="background: #333; color: #fff; border: 3px solid #000; padding: 15px; box-shadow: 3px 3px 0px #000; display: inline-block;">
+                <div style="font-family: 'Courier New', monospace; font-size: 12px; text-shadow: 1px 1px 0px #000;">
+                    ◆ POWERED BY YT-DLP ◆ BUILT WITH FLASK ◆
                 </div>
             </div>
         </footer>
@@ -137,6 +174,7 @@
         let eventSource = null;
         let autoScroll = true;
         let currentPid = null;
+        let downloadCompleted = false;
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function () {
@@ -188,11 +226,18 @@
                 }, 1000);
             });
 
-            // Auto-scroll toggle (using existing log.css style)
+            // Auto-scroll toggle (using pixel art styling)
             toggleBtn.addEventListener('click', function () {
                 autoScroll = !autoScroll;
-                toggleBtn.textContent = autoScroll ? 'Auto-Scroll: ON' : 'Auto-Scroll: OFF';
-                toggleBtn.className = autoScroll ? 'active' : '';
+                if (autoScroll) {
+                    toggleBtn.innerHTML = '▲ AUTO-SCROLL ON ▲';
+                    toggleBtn.style.background = '#449d44';
+                    toggleBtn.style.boxShadow = 'inset 2px 2px 0px #2d6a2d, 3px 3px 0px #000';
+                } else {
+                    toggleBtn.innerHTML = '▼ AUTO-SCROLL OFF ▼';
+                    toggleBtn.style.background = '#5cb85c';
+                    toggleBtn.style.boxShadow = '3px 3px 0px #000';
+                }
 
                 if (autoScroll && hasNewContent) {
                     scrollToBottomSmooth();
@@ -309,6 +354,7 @@
 
         function startLogStreaming(pid, subdir) {
             currentPid = pid;
+            downloadCompleted = false; // Reset completion flag
 
             // Close existing connection
             if (eventSource) {
@@ -325,16 +371,23 @@
                 updateConnectionStatus('connected', '● Connected');
             };
 
-            eventSource.onerror = function () {
-                updateConnectionStatus('error', '● Disconnected');
+            eventSource.onerror = function (error) {
+                console.log('EventSource error:', error);
 
-                // Attempt to reconnect after 5 seconds
-                setTimeout(() => {
+                // Only show error and attempt reconnect if the readyState indicates a real error
+                if (eventSource.readyState === EventSource.CLOSED) {
+                    updateConnectionStatus('error', '● Connection Lost');
+
+                    // Only attempt to reconnect if we still have an active PID and haven't completed
                     if (currentPid) {
-                        updateConnectionStatus('connecting', '● Reconnecting...');
-                        startLogStreaming(currentPid, subdir);
+                        setTimeout(() => {
+                            updateConnectionStatus('connecting', '● Reconnecting...');
+                            startLogStreaming(currentPid, subdir);
+                        }, 5000);
                     }
-                }, 5000);
+                } else if (eventSource.readyState === EventSource.CONNECTING) {
+                    updateConnectionStatus('connecting', '● Reconnecting...');
+                }
             };
 
             eventSource.onmessage = function (event) {
@@ -362,10 +415,20 @@
                 }
 
                 // Handle completion (existing log.css behavior)
-                if (event.data == "Download Complete" || event.data == "---^-^---") {
-                    eventSource.close();
+                if (!downloadCompleted && (event.data == "Download Complete" || event.data == "---^-^---" ||
+                    event.data.includes("has already been downloaded"))) {
+                    downloadCompleted = true; // Prevent multiple completion triggers
                     updateConnectionStatus('connected', '● Complete');
                     resetSubmitButton();
+
+                    // Delay closing the stream to capture any final messages
+                    setTimeout(() => {
+                        if (eventSource) {
+                            eventSource.close();
+                            eventSource = null;
+                            currentPid = null;
+                        }
+                    }, 5000); // Wait 5 seconds before closing to catch all final messages
                 }
             };
         }
@@ -393,19 +456,32 @@
 
         function updateConnectionStatus(status, text) {
             const statusElement = document.getElementById('connectionStatus');
-            statusElement.textContent = text;
-
-            // Remove existing status classes
-            statusElement.classList.remove('status-connected', 'status-disconnected');
+            statusElement.style.fontFamily = "'Courier New', monospace";
+            statusElement.style.fontSize = '12px';
+            statusElement.style.fontWeight = 'bold';
+            statusElement.style.padding = '4px 8px';
+            statusElement.style.border = '2px solid #000';
 
             switch (status) {
                 case 'connected':
-                    statusElement.className = 'status-indicator status-connected';
+                    statusElement.style.background = '#00ff00';
+                    statusElement.style.color = '#000';
+                    statusElement.innerHTML = '● ' + text.toUpperCase();
                     break;
                 case 'error':
+                    statusElement.style.background = '#ff0000';
+                    statusElement.style.color = '#fff';
+                    statusElement.innerHTML = '✖ ERROR';
+                    break;
                 case 'connecting':
+                    statusElement.style.background = '#ffff00';
+                    statusElement.style.color = '#000';
+                    statusElement.innerHTML = '◐ CONNECTING...';
+                    break;
                 default:
-                    statusElement.className = 'status-indicator status-disconnected';
+                    statusElement.style.background = '#cccccc';
+                    statusElement.style.color = '#000';
+                    statusElement.innerHTML = '● READY';
                     break;
             }
         }

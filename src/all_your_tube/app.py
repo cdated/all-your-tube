@@ -109,7 +109,10 @@ def download_video():
         error_message = "Invalid URL format"
 
     default_params = (
-        '-f bestvideo+bestaudio -o "%(title)s.%(ext)s" --download-archive archive.txt'
+        '-f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best" '
+        '-o "%(title)s.%(ext)s" --download-archive archive.txt --merge-output-format mp4 '
+        '--no-mtime --no-playlist --extract-flat false --write-info-json '
+        '--embed-metadata --add-metadata'
     )
     yt_env_args = os.environ.get("AYT_YTDLP_ARGS", default_params)
     ytargs = yt_env_args + " " + quote(path)
