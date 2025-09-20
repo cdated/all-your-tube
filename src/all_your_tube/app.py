@@ -111,8 +111,8 @@ def download_video():
     default_params = (
         '-f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best" '
         '-o "%(title)s.%(ext)s" --download-archive archive.txt --merge-output-format mp4 '
-        '--no-mtime --no-playlist --extract-flat false --write-info-json '
-        '--embed-metadata --add-metadata'
+        "--no-mtime --no-playlist --extract-flat false --write-info-json "
+        "--embed-metadata --add-metadata"
     )
     yt_env_args = os.environ.get("AYT_YTDLP_ARGS", default_params)
     ytargs = yt_env_args + " " + quote(path)
@@ -153,20 +153,27 @@ def download_video():
         )
 
     # Check if this is an AJAX request
-    if request.headers.get('Content-Type') == 'application/json' or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+    if (
+        request.headers.get("Content-Type") == "application/json"
+        or request.headers.get("X-Requested-With") == "XMLHttpRequest"
+    ):
         if success and pid:
             subdir = urllib.parse.quote_plus(target_dir)
-            return jsonify({
-                'success': True,
-                'pid': pid,
-                'subdir': subdir,
-                'stream_url': url_for('bp.stream', pid=pid, subdir=subdir)
-            })
-        else:
-            return jsonify({
-                'success': False,
-                'error': error_message or 'Invalid URL or missing required fields'
-            })
+            return jsonify(
+                {
+                    "success": True,
+                    "pid": pid,
+                    "subdir": subdir,
+                    "stream_url": url_for("bp.stream", pid=pid, subdir=subdir),
+                }
+            )
+
+        return jsonify(
+            {
+                "success": False,
+                "error": error_message or "Invalid URL or missing required fields",
+            }
+        )
 
     # Fallback for non-AJAX requests (original behavior)
     subdir = urllib.parse.quote_plus(target_dir)
