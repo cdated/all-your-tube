@@ -3,6 +3,8 @@
 A simple Flask web UI for yt-dlp (YouTube downloader) that provides a web
 form to submit download requests and stream real-time download progress logs.
 
+![Demo](docs/all-your-tube-demo.gif)
+
 ## Features
 
 - Web-based interface for yt-dlp downloads
