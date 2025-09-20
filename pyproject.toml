@@ -19,6 +19,7 @@ pygtail = "^0.14.0"
 watchdog = "^4.0.0"
 isort = "^5.13.2"
 black = "^24.4.1"
+requests = "^2.31.0"
 
 
 [build-system]

@@ -297,6 +297,10 @@ button, input[type="url"], input[type="text"] {
 .submit-button-container {
     text-align: center;
     margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
 }
 
 .submit-button {
@@ -306,6 +310,30 @@ button, input[type="url"], input[type="text"] {
     padding: 15px 30px;
     box-shadow: 4px 4px 0px #000;
     cursor: pointer;
+    margin: 0;
+}
+
+
+.submit-button-queue {
+    background: #9b59b6;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.submit-button-queue span:first-child {
+    margin-right: 12px;
+}
+
+.submit-button-queue span:last-child {
+    margin-left: 12px;
+}
+
+.submit-button-queue:hover {
+    background: #8e44ad;
+    box-shadow: 4px 4px 0px #000;
+    transform: translate(-1px, -1px);
 }
 
 /* Logging section classes */

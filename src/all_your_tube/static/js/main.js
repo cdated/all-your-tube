@@ -113,6 +113,26 @@ function initializeFormSubmission() {
         e.preventDefault();
         submitDownloadForm();
     });
+
+
+    // Handle queue download button
+    document.getElementById('queueDownloadBtn').addEventListener('click', function (e) {
+        e.preventDefault();
+        queueHighQualityDownload();
+    });
+
+    // Handle queue controls
+    document.getElementById('hideQueue').addEventListener('click', function () {
+        hideQueueSection();
+    });
+
+    document.getElementById('refreshQueue').addEventListener('click', function () {
+        refreshQueueStatus();
+    });
+
+    document.getElementById('showAllQueue').addEventListener('click', function () {
+        showAllQueueItems();
+    });
 }
 
 function submitDownloadForm() {
@@ -326,6 +346,194 @@ function showError(message) {
             alertDiv.remove();
         }
     }, 5000);
+}
+
+
+// Queue System Functions
+function queueHighQualityDownload() {
+    const urlInput = document.getElementById('url');
+    const queueBtn = document.getElementById('queueDownloadBtn');
+
+    if (!urlInput.value) {
+        showError('Please enter a video URL');
+        return;
+    }
+
+    // Show loading state
+    const originalText = queueBtn.innerHTML;
+    queueBtn.disabled = true;
+    queueBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Queuing...';
+
+    // Prepare form data
+    const formData = new FormData();
+    formData.append('url', urlInput.value);
+    formData.append('quality', 'best');
+
+    const urlPrefix = window.URL_PREFIX || '';
+
+    fetch(`${urlPrefix}/queue-download`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showQueueSection();
+            addQueueItem(data);
+            // Start polling for updates
+            startQueuePolling(data.queue_id);
+        } else {
+            showError(data.error || 'Failed to queue download');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showError('Failed to queue download');
+    })
+    .finally(() => {
+        // Reset button
+        queueBtn.disabled = false;
+        queueBtn.innerHTML = originalText;
+    });
+}
+
+function showQueueSection() {
+    const section = document.getElementById('queueSection');
+    section.style.display = 'block';
+    section.scrollIntoView({ behavior: 'smooth' });
+}
+
+function hideQueueSection() {
+    document.getElementById('queueSection').style.display = 'none';
+}
+
+function addQueueItem(item) {
+    const container = document.querySelector('.queue-container');
+    const itemDiv = createQueueItemElement(item);
+    container.insertBefore(itemDiv, container.firstChild);
+}
+
+function createQueueItemElement(item) {
+    const itemDiv = document.createElement('div');
+    itemDiv.id = `queue-item-${item.queue_id || item.id}`;
+    itemDiv.style.cssText = `
+        background: #1a1a1a;
+        border: 2px solid #333;
+        margin: 8px 0;
+        padding: 12px;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+    `;
+
+    updateQueueItemContent(itemDiv, item);
+    return itemDiv;
+}
+
+function updateQueueItemContent(itemDiv, item) {
+    const status = item.status || 'unknown';
+    const progress = item.progress || 0;
+    let statusColor = '#888';
+    let statusText = status.toUpperCase();
+
+    switch (status) {
+        case 'queued':
+            statusColor = '#ffff00';
+            break;
+        case 'processing':
+            statusColor = '#00aaff';
+            statusText = `PROCESSING (${Math.round(progress)}%)`;
+            break;
+        case 'completed':
+            statusColor = '#00ff00';
+            break;
+        case 'failed':
+            statusColor = '#ff0000';
+            break;
+    }
+
+    let downloadLink = '';
+    if (status === 'completed') {
+        const urlPrefix = window.URL_PREFIX || '';
+        downloadLink = `
+            <a href="${urlPrefix}/queue-download-file/${item.queue_id || item.id}"
+               style="color: #00aaff; text-decoration: underline; display: block; margin-top: 8px;"
+               download>
+                ⬇ DOWNLOAD COMPLETED FILE ⬇
+            </a>
+        `;
+    }
+
+    let errorText = '';
+    if (status === 'failed' && item.error) {
+        errorText = `
+            <div style="color: #ff6666; margin-top: 4px; font-size: 10px;">
+                Error: ${item.error}
+            </div>
+        `;
+    }
+
+    itemDiv.innerHTML = `
+        <div style="color: #00ff00; font-weight: bold; margin-bottom: 4px;">
+            ► ${item.title}
+        </div>
+        <div style="color: ${statusColor}; font-weight: bold;">
+            Status: ${statusText}
+        </div>
+        <div style="color: #888; font-size: 10px; margin-top: 4px;">
+            Quality: ${item.quality} | Created: ${new Date(item.created_at).toLocaleString()}
+        </div>
+        ${errorText}
+        ${downloadLink}
+    `;
+}
+
+function startQueuePolling(queueId) {
+    const pollInterval = setInterval(() => {
+        const urlPrefix = window.URL_PREFIX || '';
+
+        fetch(`${urlPrefix}/queue-status/${queueId}`)
+            .then(response => response.json())
+            .then(data => {
+                const itemDiv = document.getElementById(`queue-item-${queueId}`);
+                if (itemDiv) {
+                    updateQueueItemContent(itemDiv, data);
+                }
+
+                // Stop polling if completed or failed
+                if (data.status === 'completed' || data.status === 'failed') {
+                    clearInterval(pollInterval);
+                }
+            })
+            .catch(error => {
+                console.error('Polling error:', error);
+                clearInterval(pollInterval);
+            });
+    }, 2000); // Poll every 2 seconds
+}
+
+function refreshQueueStatus() {
+    const urlPrefix = window.URL_PREFIX || '';
+
+    fetch(`${urlPrefix}/queue-list`)
+        .then(response => response.json())
+        .then(data => {
+            const container = document.querySelector('.queue-container');
+            container.innerHTML = '';
+
+            data.items.forEach(item => {
+                const itemDiv = createQueueItemElement(item);
+                container.appendChild(itemDiv);
+            });
+        })
+        .catch(error => {
+            console.error('Error refreshing queue:', error);
+            showError('Failed to refresh queue');
+        });
+}
+
+function showAllQueueItems() {
+    showQueueSection();
+    refreshQueueStatus();
 }
 
 // Cleanup on page unload

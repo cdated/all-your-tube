@@ -10,19 +10,12 @@ from datetime import datetime
 from pathlib import Path
 from shlex import quote
 
-from flask import (
-    Blueprint,
-    Flask,
-    Response,
-    jsonify,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, Flask, Response, jsonify, redirect,
+                   render_template, request, url_for)
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from . import log_monitoring
+from .queue import queue_bp
 
 PREFIX = "/yourtube"
 WORKDIR = os.environ.get("AYT_WORKDIR")
@@ -32,6 +25,7 @@ if not WORKDIR:
 WORKDIR = Path(WORKDIR)
 if not WORKDIR.is_dir():
     raise RuntimeError(f"AYT_WORKDIR {WORKDIR} does not exist")
+
 
 bp = Blueprint("bp", __name__, static_folder="static", template_folder="templates")
 app = Flask(__name__)
@@ -131,11 +125,9 @@ def download_video():
         os.chdir(workdir)
 
         # Use a timestamp to refer to the download logs
-        cmd = quote("yt-dlp")
         pid = str(int(datetime.now().timestamp()))
         job_log = pid + ".log"
-        command = f"nohup {cmd} {ytargs} &>> {job_log} && echo 'Download Complete' &>> {job_log}"
-        app.logger.info("Running command: %s", command)
+        app.logger.info("Running with yt-dlp args: %s", ytargs)
 
         with open(job_log, "w", encoding="utf-8") as f:
             f.write("Starting...\n")
@@ -192,12 +184,12 @@ def index():
 
 def main():
     """Run Flask server to request yt-dlp commands"""
-
     host = os.environ.get("AYT_HOST", "0.0.0.0")
     port = int(os.environ.get("AYT_PORT", 1424))
     app.debug = os.environ.get("AYT_DEBUG", False)
 
     app.register_blueprint(bp, url_prefix=PREFIX)
+    app.register_blueprint(queue_bp, url_prefix=PREFIX)
     app.run(host=host, port=port, threaded=True)
 
 

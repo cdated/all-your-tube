@@ -67,11 +67,46 @@
                             <button type="submit" class="submit-button">
                                 ▶ START DOWNLOAD ◀
                             </button>
+                            <button type="button" id="queueDownloadBtn" class="submit-button submit-button-queue">
+                                <span>▼</span>
+                                <span>CREATE DOWNLOAD LINK</span>
+                                <span>▼</span>
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </main>
+
+
+        <!-- Queue Status Section -->
+        <section id="queueSection" class="logging-section" style="display: none;">
+            <div class="logging-card">
+                <div class="log-header-bar">
+                    <div class="log-header">
+                        <h2 class="log-title">
+                            ◆ DOWNLOAD QUEUE ◆
+                        </h2>
+                        <button id="hideQueue" class="log-button log-button-red">
+                            ✖ CLOSE ✖
+                        </button>
+                    </div>
+                </div>
+                <div class="log-controls">
+                    <button id="refreshQueue" class="log-button log-button-green">
+                        REFRESH
+                    </button>
+                    <button id="showAllQueue" class="log-button log-button-orange">
+                        SHOW ALL
+                    </button>
+                </div>
+                <div id="queueContent" class="log-terminal">
+                    <div class="queue-container">
+                        <!-- Queue items will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- Logging Section -->
         <section id="loggingSection" class="logging-section">
