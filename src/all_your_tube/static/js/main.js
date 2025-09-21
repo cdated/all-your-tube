@@ -375,26 +375,26 @@ function queueHighQualityDownload() {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showQueueSection();
-            addQueueItem(data);
-            // Start polling for updates
-            startQueuePolling(data.queue_id);
-        } else {
-            showError(data.error || 'Failed to queue download');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showError('Failed to queue download');
-    })
-    .finally(() => {
-        // Reset button
-        queueBtn.disabled = false;
-        queueBtn.innerHTML = originalText;
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showQueueSection();
+                addQueueItem(data);
+                // Start polling for updates
+                startQueuePolling(data.queue_id);
+            } else {
+                showError(data.error || 'Failed to queue download');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showError('Failed to queue download');
+        })
+        .finally(() => {
+            // Reset button
+            queueBtn.disabled = false;
+            queueBtn.innerHTML = originalText;
+        });
 }
 
 function showQueueSection() {
@@ -457,9 +457,7 @@ function updateQueueItemContent(itemDiv, item) {
         downloadLink = `
             <a href="${urlPrefix}/queue-download-file/${item.queue_id || item.id}"
                style="color: #00aaff; text-decoration: underline; display: block; margin-top: 8px;"
-               download>
-                ⬇ DOWNLOAD COMPLETED FILE ⬇
-            </a>
+               download>Download Video Locally</a>
         `;
     }
 
