@@ -12,7 +12,7 @@ from pathlib import Path
 
 from flask import Blueprint, Response, jsonify, request
 
-from .utils import get_cookies
+from .utils import get_cookies, validate_input
 
 # Get WORKDIR from environment
 WORKDIR = os.environ.get("AYT_WORKDIR")
@@ -32,20 +32,13 @@ queue_lock = threading.Lock()
 queue_bp = Blueprint("queue", __name__)
 
 
-def _validate_input(val):
-    """Barest minimum code injection check"""
-    if val and ";" in val:
-        return False
-    return True
-
-
 @queue_bp.route("/queue-download", methods=["POST"])
 def queue_download():
     """Queue a high-quality video for background processing"""
     url = request.form.get("url")
     quality = request.form.get("quality", "best")  # best, 1080p, 720p, etc.
 
-    if not url or not _validate_input(url):
+    if not url or not validate_input(url):
         return jsonify({"error": "Invalid URL"}), 400
 
     # Generate unique queue ID

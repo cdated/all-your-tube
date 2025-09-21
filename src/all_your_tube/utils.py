@@ -5,6 +5,13 @@ Utility functions for all-your-tube application.
 import os
 
 
+def validate_input(val):
+    """Barest minimum code injection check"""
+    if val and ";" in val:
+        return False
+    return True
+
+
 def get_cookies():
     """Get AYT_YTDLP_COOKIE value and ensure absolute paths for cookie files"""
     cookie_args = os.environ.get("AYT_YTDLP_COOKIE", "")

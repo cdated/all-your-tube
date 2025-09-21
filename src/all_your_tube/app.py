@@ -15,7 +15,6 @@ from flask import (
     Flask,
     Response,
     jsonify,
-    redirect,
     render_template,
     request,
     url_for,
@@ -24,7 +23,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 from . import log_monitoring
 from .queue import queue_bp
-from .utils import get_cookies
+from .utils import get_cookies, validate_input
 
 PREFIX = "/yourtube"
 WORKDIR = os.environ.get("AYT_WORKDIR")
@@ -59,13 +58,6 @@ app.logger.addHandler(log_handler)
 def inject_dict_for_all_templates():
     """Inject URL location"""
     return {"url_prefix": PREFIX}
-
-
-def validate_input(val):
-    """Barest minimum code injection check"""
-    if val and ";" in val:
-        return False
-    return True
 
 
 def log_filepath(pid, subdir):

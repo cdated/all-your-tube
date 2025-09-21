@@ -179,12 +179,6 @@ function submitDownloadForm() {
         });
 }
 
-function showLoggingSection() {
-    const section = document.getElementById('loggingSection');
-    section.style.display = 'block';
-    section.scrollIntoView({ behavior: 'smooth' });
-}
-
 function hideLoggingSection() {
     document.getElementById('loggingSection').style.display = 'none';
     if (eventSource) {
