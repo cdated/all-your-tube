@@ -33,7 +33,7 @@ if not WORKDIR:
     raise RuntimeError("AYT_WORKDIR env variable must be set")
 WORKDIR = Path(WORKDIR)
 if not WORKDIR.is_dir():
-    raise RuntimeError(f"AYT_WORKDIR {WORKDIR} does not exist")
+    WORKDIR.mkdir(parents=True, exist_ok=True)
 
 
 bp = Blueprint("bp", __name__, static_folder="static", template_folder="templates")
@@ -43,7 +43,15 @@ app.wsgi_app = ProxyFix(app.wsgi_app)
 
 # Configure Flask logging
 app.logger.setLevel(logging.INFO)  # Set log level to INFO
-log_handler = logging.FileHandler("app.log")  # Log to a file
+log_dir = Path(os.environ.get("AYT_WORKDIR", ".")) / "logs"
+log_dir.mkdir(exist_ok=True)
+
+# Ensure cache directory exists in WORKDIR
+cache_dir = Path(os.environ.get("AYT_WORKDIR", ".")) / ".cache"
+cache_dir.mkdir(exist_ok=True)
+os.environ["XDG_CACHE_HOME"] = str(cache_dir)
+
+log_handler = logging.FileHandler(log_dir / "app.log")  # Log to logs directory
 app.logger.addHandler(log_handler)
 
 
@@ -112,10 +120,10 @@ def download_video():
         error_message = "Invalid URL format"
 
     default_params = (
-        '-f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best" '
-        '-o "%(title)s.%(ext)s" --download-archive archive.txt --merge-output-format mp4 '
-        "--no-mtime --no-playlist --extract-flat false --write-info-json "
-        "--embed-metadata --add-metadata"
+        '-f "best[ext=mp4]/best" --restrict-filenames --write-thumbnail '
+        "--embed-thumbnail --convert-thumbnails jpg "
+        '-o "%(uploader)s - %(title).100s.%(ext)s" '
+        "--paths temp:/tmp --no-part "
     )
     yt_env_args = os.environ.get("AYT_YTDLP_ARGS", default_params)
 

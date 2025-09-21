@@ -19,11 +19,7 @@ def main():
     config_path = Path(__file__).parent.parent.parent / "gunicorn.conf.py"
 
     # Build gunicorn command with config file
-    cmd = [
-        "gunicorn",
-        "--config", str(config_path),
-        "all_your_tube.wsgi:application"
-    ]
+    cmd = ["gunicorn", "--config", str(config_path), "all_your_tube.wsgi:application"]
 
     # Execute gunicorn
     sys.exit(subprocess.call(cmd))

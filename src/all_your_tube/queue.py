@@ -22,7 +22,7 @@ WORKDIR = Path(WORKDIR)
 
 # Queue system globals
 QUEUE_DIR = WORKDIR / "queue"
-QUEUE_DIR.mkdir(exist_ok=True)
+QUEUE_DIR.mkdir(parents=True, exist_ok=True)
 
 # In-memory queue storage (for simplicity - could be replaced with Redis/DB)
 download_queue = {}
@@ -57,7 +57,9 @@ def queue_download():
     if cookie_args:
         cmd.extend(cookie_args.split())
     cmd.append(url)
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=30, check=False)
+    result = subprocess.run(
+        cmd, capture_output=True, text=True, timeout=30, check=False
+    )
 
     if result.returncode != 0:
         return jsonify({"error": "Failed to get video metadata"}), 400
@@ -150,10 +152,9 @@ def _build_format_selector(quality):
     """Build yt-dlp format selector based on quality setting."""
     if quality == "best":
         return "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]"
-    height_limit = quality.replace('p', '')
+    height_limit = quality.replace("p", "")
     return (
-        f"bestvideo[height<={height_limit}][ext=mp4]+"
-        f"bestaudio[ext=m4a]/best[ext=mp4]"
+        f"bestvideo[height<={height_limit}][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]"
     )
 
 
@@ -166,16 +167,18 @@ def _build_ytdlp_command(url, quality, output_template):
     if cookie_args:
         cmd.extend(cookie_args.split())
 
-    cmd.extend([
-        "-f",
-        format_selector,
-        "--merge-output-format",
-        "mp4",
-        "-o",
-        output_template,
-        "--no-playlist",
-        url,
-    ])
+    cmd.extend(
+        [
+            "-f",
+            format_selector,
+            "--merge-output-format",
+            "mp4",
+            "-o",
+            output_template,
+            "--no-playlist",
+            url,
+        ]
+    )
 
     return cmd
 
