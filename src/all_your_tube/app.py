@@ -78,13 +78,6 @@ def log_filepath(pid, subdir):
     return logfile
 
 
-@bp.route("/logs/<pid>")
-def render_live_logs(pid):
-    """Render log page"""
-    subdir = request.args.get("subdir", "default")
-    return render_template("log.html", pid=pid, subdir=subdir)
-
-
 @bp.route("/stream/<pid>")
 def stream(pid):
     """Stream the download log data using file watching"""
@@ -189,12 +182,6 @@ def download_video():
                 "error": error_message or "Invalid URL or missing required fields",
             }
         )
-
-    # Fallback for non-AJAX requests (original behavior)
-    subdir = urllib.parse.quote_plus(target_dir)
-    if pid:
-        app.logger.info("Redirecting to logs page for %s", pid)
-        return redirect(url_for("bp.render_live_logs", pid=pid, subdir=subdir))
 
     return render_template("index.html")
 
