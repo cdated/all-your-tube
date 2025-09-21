@@ -188,14 +188,17 @@ def index():
     return render_template("index.html")
 
 
+# Register blueprints at module level for both dev and production
+app.register_blueprint(bp, url_prefix=PREFIX)
+app.register_blueprint(queue_bp, url_prefix=PREFIX)
+
+
 def main():
-    """Run Flask server to request yt-dlp commands"""
+    """Run Flask development server"""
     host = os.environ.get("AYT_HOST", "0.0.0.0")
     port = int(os.environ.get("AYT_PORT", 1424))
     app.debug = os.environ.get("AYT_DEBUG", False)
 
-    app.register_blueprint(bp, url_prefix=PREFIX)
-    app.register_blueprint(queue_bp, url_prefix=PREFIX)
     app.run(host=host, port=port, threaded=True)
 
 

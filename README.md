@@ -135,16 +135,37 @@ services:
 
 ### Running Locally
 
-**Using the launch script (recommended):**
+**Development server:**
 
 ```bash
+# Using the launch script
 ./launch.sh
+
+# Or using Poetry directly
+poetry run all-your-tube-dev
 ```
 
-**Using Poetry directly:**
+**Production server:**
 
 ```bash
+# Install dependencies including Gunicorn
+poetry install
+
+# Run with Gunicorn WSGI server (default command)
 poetry run all-your-tube
+
+# Or run Gunicorn directly
+poetry run gunicorn --config gunicorn.conf.py all_your_tube.wsgi:application
+```
+
+**Environment variables for production:**
+
+```bash
+export AYT_WORKERS=4                                    # Number of worker processes (default: 4)
+export AYT_HOST=0.0.0.0                                 # Server host (default: 0.0.0.0)
+export AYT_PORT=1424                                    # Server port (default: 1424)
+export AYT_WORKDIR="/path/to/downloads"                 # Download directory (required)
+export AYT_YTDLP_COOKIE="--cookies-from-browser chrome" # Cookie authentication (recommended)
 ```
 
 ### Accessing the Web Interface

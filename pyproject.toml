@@ -1,13 +1,14 @@
 [tool.poetry]
 name = "all-your-tube"
-version = "1.0.0"
+version = "1.1.0"
 description = "A simple Flask web UI for yt-dlp"
 authors = ["Brandon T. Fields <brandon@cdated.com>"]
 readme = "README.md"
-packages = [{include = "all_your_tube", from = "src"}]
+packages = [{ include = "all_your_tube", from = "src" }]
 
 [tool.poetry.scripts]
-all-your-tube = "all_your_tube.app:main"
+all-your-tube-dev = "all_your_tube.app:main"
+all-your-tube = "all_your_tube.wsgi:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -20,7 +21,11 @@ watchdog = "^4.0.0"
 isort = "^5.13.2"
 black = "^24.4.1"
 requests = "^2.31.0"
+gunicorn = "^23.0.0"
 
+
+[tool.pylint.MASTER]
+ignore-paths = ["gunicorn.conf.py", "src/all_your_tube/wsgi.py"]
 
 [build-system]
 requires = ["poetry-core"]
