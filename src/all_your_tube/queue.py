@@ -12,6 +12,8 @@ from pathlib import Path
 
 from flask import Blueprint, Response, jsonify, request
 
+from .utils import get_cookies
+
 # Get WORKDIR from environment
 WORKDIR = os.environ.get("AYT_WORKDIR")
 if not WORKDIR:
@@ -50,7 +52,7 @@ def queue_download():
     queue_id = str(int(datetime.now().timestamp()))
 
     # Get video metadata for title
-    cookie_args = os.environ.get("AYT_YTDLP_COOKIE", "")
+    cookie_args = get_cookies()
     cmd = ["yt-dlp", "--dump-json", "--no-download"]
     if cookie_args:
         cmd.extend(cookie_args.split())
@@ -158,7 +160,7 @@ def _build_format_selector(quality):
 def _build_ytdlp_command(url, quality, output_template):
     """Build yt-dlp command arguments."""
     format_selector = _build_format_selector(quality)
-    cookie_args = os.environ.get("AYT_YTDLP_COOKIE", "")
+    cookie_args = get_cookies()
 
     cmd = ["yt-dlp"]
     if cookie_args:

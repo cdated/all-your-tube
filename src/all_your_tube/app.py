@@ -10,12 +10,21 @@ from datetime import datetime
 from pathlib import Path
 from shlex import quote
 
-from flask import (Blueprint, Flask, Response, jsonify, redirect,
-                   render_template, request, url_for)
+from flask import (
+    Blueprint,
+    Flask,
+    Response,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from . import log_monitoring
 from .queue import queue_bp
+from .utils import get_cookies
 
 PREFIX = "/yourtube"
 WORKDIR = os.environ.get("AYT_WORKDIR")
@@ -111,7 +120,7 @@ def download_video():
     yt_env_args = os.environ.get("AYT_YTDLP_ARGS", default_params)
 
     # Add cookie support if AYT_YTDLP_COOKIE is set
-    cookie_args = os.environ.get("AYT_YTDLP_COOKIE", "")
+    cookie_args = get_cookies()
     if cookie_args:
         yt_env_args += f" {cookie_args}"
 
