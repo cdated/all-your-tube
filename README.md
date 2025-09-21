@@ -57,7 +57,9 @@ Set up the required environment variables:
 - `AYT_PORT`: Server port (default: 1424)
 - `AYT_DEBUG`: Debug mode (default: False)
 - `AYT_YTDLP_ARGS`: Custom yt-dlp arguments (default:
-  `-f bestvideo+bestaudio -o "%(title)s.%(ext)s" --download-archive archive.txt`)
+  `-f "best[ext=mp4]/best" --restrict-filenames --write-thumbnail
+  --embed-thumbnail --convert-thumbnails jpg
+   -o "%(uploader)s - %(title).100s.%(ext)s" --paths temp:/tmp --no-part`)
 - `AYT_YTDLP_COOKIE`: Cookie authentication for yt-dlp. **Required for most
   platforms** to handle bot detection and access age-restricted content.
 
@@ -109,11 +111,17 @@ export AYT_YTDLP_COOKIE="--cookies /path/to/cookies.txt"
 # Build the image
 docker build -t all-your-tube .
 
-# Run the container
-docker run -d \
+# Run using the provided script
+./run_docker.sh
+
+# Or run manually with proper volume mounts
+docker run --rm \
+  --user $(id -u):$(id -g) \
   --name all-your-tube \
   -p 1424:1424 \
-  -v $(pwd)/downloads:/app/downloads \
+  -v $(pwd)/downloads:/tmp/downloads \
+  -v $(pwd)/cookie:/tmp/cookie \
+  -e AYT_YTDLP_COOKIE="--cookies /tmp/cookie" \
   all-your-tube
 ```
 
@@ -128,9 +136,11 @@ services:
     ports:
       - "1424:1424"
     volumes:
-      - ./downloads:/app/downloads
+      - ./downloads:/tmp/downloads
+      - ./cookie:/tmp/cookie
     environment:
-      - AYT_WORKDIR=/app/downloads
+      - AYT_WORKDIR=/tmp/downloads
+      - AYT_YTDLP_COOKIE=--cookies /tmp/cookie
 ```
 
 ### Running Locally
