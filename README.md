@@ -1,14 +1,14 @@
 # All Your Tube
 
 A minimalist web interface for yt-dlp that makes video downloading simple and
-accessible. Download videos to your server or locally from YouTube, Vimeo,
-etc. through an intuitive web UI.
+accessible. Download videos to your server or locally from sites like YouTube
+and Vimeo.
 
 ![Demo](docs/all-your-tube-demo.gif)
 
 ## What Makes It Special
 
-- **Download Links**: Create links for client-side downloads.
+- **Download Link Generation**: Create links for client-side downloads
 - **Real-Time Progress**: Watch downloads happen live with streaming logs
 - **Organized Downloads**: Organize videos into custom folders
 - **Zero Client Software**: Just a web browser - works on any device
@@ -37,7 +37,7 @@ git clone <repository-url>
 cd all-your-tube
 ```
 
-2. Install dependencies using Poetry:
+1. Install dependencies using Poetry:
 
 ```bash
 poetry install
@@ -58,13 +58,46 @@ Set up the required environment variables:
 - `AYT_DEBUG`: Debug mode (default: False)
 - `AYT_YTDLP_ARGS`: Custom yt-dlp arguments (default:
   `-f bestvideo+bestaudio -o "%(title)s.%(ext)s" --download-archive archive.txt`)
+- `AYT_YTDLP_COOKIE`: Cookie authentication for yt-dlp. **Required for most
+  platforms** to handle bot detection and access age-restricted content.
 
 Example:
 
 ```bash
 export AYT_WORKDIR="/path/to/downloads"
 export AYT_PORT=8080
+export AYT_YTDLP_COOKIE="--cookies-from-browser chrome"
 ```
+
+### Cookie Authentication
+
+Most video platforms now require authentication to handle bots and control
+content access. The `AYT_YTDLP_COOKIE` variable supports two authentication
+methods:
+
+**Browser Cookie Extraction (Recommended):**
+
+```bash
+# Chrome/Chromium
+export AYT_YTDLP_COOKIE="--cookies-from-browser chrome"
+
+# Firefox
+export AYT_YTDLP_COOKIE="--cookies-from-browser firefox"
+```
+
+**Manual Cookie File:**
+
+```bash
+export AYT_YTDLP_COOKIE="--cookies /path/to/cookies.txt"
+```
+
+**Why is this needed?**
+
+- YouTube discontinued username/password authentication in 2024
+- Platforms use sophisticated bot detection requiring browser cookies
+- Age-restricted and private content requires authenticated sessions
+- Cookie-based auth bypasses CAPTCHAs and "Sign in to confirm you're not a bot"
+  errors
 
 ## Usage
 
@@ -174,7 +207,8 @@ poetry update
 - **Log Monitoring** (`src/all_your_tube/log_monitoring.py`): Real-time
   file monitoring using watchdog
 - **Templates** (`src/all_your_tube/templates/`): HTML templates with pixel art styling
-- **Static Files** (`src/all_your_tube/static/`): CSS and JavaScript for the web interface
+- **Static Files** (`src/all_your_tube/static/`): CSS and JavaScript for the
+  web interface
 
 ### URL Structure
 

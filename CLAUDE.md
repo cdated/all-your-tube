@@ -27,6 +27,7 @@ all-your-tube is a simple Flask web UI for yt-dlp (YouTube downloader). The appl
 ## Development Commands
 
 ### Running the Application
+
 ```bash
 # Using the launch script (recommended)
 ./launch.sh
@@ -36,6 +37,7 @@ poetry run all-your-tube
 ```
 
 ### Code Quality Tools
+
 ```bash
 # Linting with pylint
 poetry run pylint src/all_your_tube/
@@ -48,6 +50,7 @@ poetry run isort src/
 ```
 
 ### Dependency Management
+
 ```bash
 # Install dependencies
 poetry install
@@ -59,17 +62,23 @@ poetry update
 ## Environment Variables
 
 Required:
+
 - `AYT_WORKDIR`: Directory where downloads and logs are stored
+- `AYT_YTDLP_COOKIE`: Cookie authentication for yt-dlp
+  (e.g., `--cookies /path/to/cookies.txt` or `--cookies-from-browser chrome`)
 
 Optional:
+
 - `AYT_HOST`: Server host (default: "0.0.0.0")
 - `AYT_PORT`: Server port (default: 1424)
 - `AYT_DEBUG`: Debug mode (default: False)
-- `AYT_YTDLP_ARGS`: Custom yt-dlp arguments (default: `-f bestvideo+bestaudio -o "%(title)s.%(ext)s" --download-archive archive.txt`)
+- `AYT_YTDLP_ARGS`: Custom yt-dlp arguments
+  (default: `-f bestvideo+bestaudio -o "%(title)s.%(ext)s" --download-archive archive.txt`)
 
 ## URL Structure
 
 The application uses a URL prefix `/yourtube` for all routes. Main routes:
+
 - `/yourtube/`: Main download form
 - `/yourtube/save`: POST endpoint for download submission
 - `/yourtube/logs/<pid>`: Live log viewing page
@@ -94,3 +103,4 @@ src/
 - Flask: Web framework
 - pygtail: Log file tailing for live updates
 - werkzeug: WSGI utilities and proxy handling
+

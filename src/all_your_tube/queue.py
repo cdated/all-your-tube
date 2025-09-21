@@ -50,9 +50,11 @@ def queue_download():
     queue_id = str(int(datetime.now().timestamp()))
 
     # Get video metadata for title
-    cookie = os.environ.get("AYT_YTDLP_COOKIE", "")
-    ck = cookie.split(" ")
-    cmd = ["yt-dlp", "--dump-json", "--no-download", ck[0], ck[1], url]
+    cookie_args = os.environ.get("AYT_YTDLP_COOKIE", "")
+    cmd = ["yt-dlp", "--dump-json", "--no-download"]
+    if cookie_args:
+        cmd.extend(cookie_args.split())
+    cmd.append(url)
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=30, check=False)
 
     if result.returncode != 0:
@@ -156,12 +158,13 @@ def _build_format_selector(quality):
 def _build_ytdlp_command(url, quality, output_template):
     """Build yt-dlp command arguments."""
     format_selector = _build_format_selector(quality)
-    cookie = os.environ.get("AYT_YTDLP_COOKIE", "")
-    ck = cookie.split(" ")
-    return [
-        "yt-dlp",
-        ck[0],
-        ck[1],
+    cookie_args = os.environ.get("AYT_YTDLP_COOKIE", "")
+
+    cmd = ["yt-dlp"]
+    if cookie_args:
+        cmd.extend(cookie_args.split())
+
+    cmd.extend([
         "-f",
         format_selector,
         "--merge-output-format",
@@ -170,7 +173,9 @@ def _build_ytdlp_command(url, quality, output_template):
         output_template,
         "--no-playlist",
         url,
-    ]
+    ])
+
+    return cmd
 
 
 def _monitor_download_progress(process, queue_id):

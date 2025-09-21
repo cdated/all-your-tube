@@ -109,6 +109,12 @@ def download_video():
         "--embed-metadata --add-metadata"
     )
     yt_env_args = os.environ.get("AYT_YTDLP_ARGS", default_params)
+
+    # Add cookie support if AYT_YTDLP_COOKIE is set
+    cookie_args = os.environ.get("AYT_YTDLP_COOKIE", "")
+    if cookie_args:
+        yt_env_args += f" {cookie_args}"
+
     ytargs = yt_env_args + " " + quote(path)
     workdir = WORKDIR
     pid = None
