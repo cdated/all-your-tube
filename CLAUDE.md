@@ -29,10 +29,7 @@ all-your-tube is a simple Flask web UI for yt-dlp (YouTube downloader). The appl
 ### Running the Application
 
 ```bash
-# Using the launch script (recommended)
-./launch.sh
-
-# Direct poetry execution
+# Using poetry directly
 poetry run all-your-tube
 ```
 
