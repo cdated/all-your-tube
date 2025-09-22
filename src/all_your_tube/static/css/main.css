@@ -471,6 +471,39 @@ button, input[type="url"], input[type="text"] {
     text-shadow: 1px 1px 0px #000;
 }
 
+.github-corner {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    background: #e09d3d;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    border: 3px solid #000;
+    border-top: none;
+    border-right: none;
+    padding: 12px 20px 8px 20px;
+    text-shadow: 1px 1px 0px #000;
+    transition: all 0.2s ease;
+    border-radius: 0 0 0 8px;
+    box-shadow: -3px 3px 0px #000;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.github-corner:hover {
+    background: #f0ad4e;
+    color: #fff;
+    text-decoration: none;
+    transform: translate(-1px, 1px);
+    box-shadow: -2px 2px 0px #000;
+}
+
+
 /* Status container text wrapping - applies to all screen sizes */
 #loggingSection .status-container,
 #loggingSection .status-container > div {
