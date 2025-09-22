@@ -1,0 +1,31 @@
+name: Code Quality
+
+on: [push, pull_request]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install --extras dev
+      - name: Format check
+        run: |
+          poetry run black --check src/
+      - name: Import sorting check
+        run: |
+          poetry run isort --check-only src/
+      - name: Lint with pylint
+        run: |
+          poetry run pylint src/all_your_tube/
+
