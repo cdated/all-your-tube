@@ -100,4 +100,3 @@ src/
 - Flask: Web framework
 - pygtail: Log file tailing for live updates
 - werkzeug: WSGI utilities and proxy handling
-

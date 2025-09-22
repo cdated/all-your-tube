@@ -115,21 +115,26 @@ export AYT_YTDLP_COOKIE="--cookies /path/to/cookies.txt"
 ## Using the Web Interface
 
 1. Open `http://localhost:1424/yourtube/` in your browser
-2. Enter a video URL from YouTube, Vimeo, or any supported platform
-3. Optionally specify a subdirectory for organization
-4. Choose your download method:
+1. Enter a video URL from YouTube, Vimeo, or any supported platform
+1. Optionally specify a subdirectory for organization
+1. Choose your download method:
    - **Start Download**: Immediate download with real-time progress logs
    - **Create Download Link**: Generate download links for remote clients
-5. Monitor progress and download completed files
+1. Monitor progress and download completed files
 
 ## Development
 
 **Code Quality Tools:**
 
 ```bash
+# Format all code and documentation
+poetry run fmt
+
+# Individual tools
 poetry run pylint src/all_your_tube/
 poetry run black src/
 poetry run isort src/
+poetry run mdformat README.md
 ```
 
 **Dependency Management:**

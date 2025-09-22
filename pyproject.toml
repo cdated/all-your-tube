@@ -9,6 +9,7 @@ packages = [{ include = "all_your_tube", from = "src" }]
 [tool.poetry.scripts]
 all-your-tube-dev = "all_your_tube.app:main"
 all-your-tube = "all_your_tube.wsgi:main"
+fmt = "scripts.format:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -23,9 +24,15 @@ black = "^24.4.1"
 requests = "^2.31.0"
 gunicorn = "^23.0.0"
 
+[tool.poetry.group.dev.dependencies]
+mdformat = "^0.7.17"
+mdformat-gfm = "^0.3.6"
 
 [tool.pylint.MASTER]
 ignore-paths = ["gunicorn.conf.py", "src/all_your_tube/wsgi.py"]
+
+[tool.mdformat]
+wrap = 80
 
 [build-system]
 requires = ["poetry-core"]

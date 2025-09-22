@@ -10,15 +10,7 @@ from datetime import datetime
 from pathlib import Path
 from shlex import quote
 
-from flask import (
-    Blueprint,
-    Flask,
-    Response,
-    jsonify,
-    render_template,
-    request,
-    url_for,
-)
+from flask import Blueprint, Flask, Response, jsonify, render_template, request, url_for
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from . import log_monitoring
