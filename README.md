@@ -124,6 +124,13 @@ export AYT_YTDLP_COOKIE="--cookies /path/to/cookies.txt"
 
 ## Development
 
+**Testing:**
+
+```bash
+# Run tests with coverage
+poetry run pytest tests/ --cov=all_your_tube
+```
+
 **Code Quality Tools:**
 
 ```bash
@@ -135,6 +142,12 @@ poetry run pylint src/all_your_tube/
 poetry run black src/
 poetry run isort src/
 poetry run mdformat README.md
+
+# Set up pre-commit hooks (runs quality checks automatically)
+poetry run pre-commit install
+
+# Run pre-commit on all files
+poetry run pre-commit run --all-files
 ```
 
 **Dependency Management:**
@@ -182,6 +195,7 @@ All routes use the `/yourtube` prefix:
 - Flask: Web framework
 - watchdog: Filesystem event monitoring for real-time log updates
 - werkzeug: WSGI utilities and proxy handling
+- python-ulid: ULID generation for unique download identifiers
 - yt-dlp: YouTube downloader (external dependency)
 
 ## Usage Guidelines

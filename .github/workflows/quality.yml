@@ -28,4 +28,3 @@ jobs:
       - name: Lint with pylint
         run: |
           poetry run pylint src/all_your_tube/
-

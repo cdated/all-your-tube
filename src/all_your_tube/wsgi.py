@@ -2,7 +2,9 @@
 WSGI configuration for production deployment.
 """
 
-import os
+import subprocess
+import sys
+from pathlib import Path
 
 from .app import app
 
@@ -12,9 +14,6 @@ application = app
 
 def main():
     """Run the application with Gunicorn using configuration file."""
-    import subprocess
-    import sys
-    from pathlib import Path
 
     # Find gunicorn config file relative to this module
     config_path = Path(__file__).parent.parent.parent / "gunicorn.conf.py"
