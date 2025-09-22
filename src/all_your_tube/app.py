@@ -6,11 +6,11 @@ import logging
 import os
 import subprocess
 import urllib.parse
-from datetime import datetime
 from pathlib import Path
 from shlex import quote
 
 from flask import Blueprint, Flask, Response, jsonify, render_template, request, url_for
+from ulid import ULID
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from . import log_monitoring
@@ -124,8 +124,8 @@ def download_video():
 
         os.chdir(workdir)
 
-        # Use a timestamp to refer to the download logs
-        pid = str(int(datetime.now().timestamp()))
+        # Use a ULID to refer to the download logs
+        pid = str(ULID())
         job_log = pid + ".log"
         app.logger.info("Running with yt-dlp args: %s", ytargs)
 
