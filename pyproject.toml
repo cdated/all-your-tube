@@ -1,32 +1,67 @@
-[tool.poetry]
+[project]
 name = "all-your-tube"
 version = "1.1.0"
 description = "A simple Flask web UI for yt-dlp"
-authors = ["Brandon T. Fields <brandon@cdated.com>"]
+authors = [{ name = "Brandon T. Fields", email = "brandon@cdated.com" }]
 readme = "README.md"
-packages = [{ include = "all_your_tube", from = "src" }]
+license = { text = "MIT" }
+requires-python = ">=3.11"
+keywords = [
+    "youtube",
+    "downloader",
+    "yt-dlp",
+    "flask",
+    "web-ui",
+    "video",
+    "media",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Framework :: Flask",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Multimedia :: Video",
+]
+dependencies = [
+    "werkzeug>=3.0.6",
+    "flask>=3.0.3",
+    "jinja2>=3.1.6",
+    "pygtail>=0.14.0",
+    "watchdog>=4.0.0",
+    "requests>=2.31.0",
+    "gunicorn>=23.0.0",
+]
 
-[tool.poetry.scripts]
-all-your-tube-dev = "all_your_tube.app:main"
+[project.urls]
+Homepage = "https://github.com/cdated/all-your-tube"
+Repository = "https://github.com/cdated/all-your-tube"
+Issues = "https://github.com/cdated/all-your-tube/issues"
+
+[project.scripts]
 all-your-tube = "all_your_tube.wsgi:main"
+all-your-tube-dev = "all_your_tube.app:main"
 fmt = "scripts.format:main"
+
+[project.optional-dependencies]
+dev = [
+    "pylint>=3.1.0",
+    "isort>=5.13.2",
+    "black>=24.4.1",
+    "mdformat>=0.7.17",
+    "mdformat-gfm>=0.3.6",
+]
+
+[tool.poetry]
+packages = [{ include = "all_your_tube", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-werkzeug = "^3.0.6"
-flask = "^3.0.3"
-jinja2 = "^3.1.6"
-pylint = "^3.1.0"
-pygtail = "^0.14.0"
-watchdog = "^4.0.0"
-isort = "^5.13.2"
-black = "^24.4.1"
-requests = "^2.31.0"
-gunicorn = "^23.0.0"
-
-[tool.poetry.group.dev.dependencies]
-mdformat = "^0.7.17"
-mdformat-gfm = "^0.3.6"
 
 [tool.pylint.MASTER]
 ignore-paths = ["gunicorn.conf.py", "src/all_your_tube/wsgi.py"]
