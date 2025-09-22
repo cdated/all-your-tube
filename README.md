@@ -45,8 +45,8 @@ docker run --rm \
 ### Local Development
 
 ```bash
-# Install dependencies
-poetry install
+# Install dependencies (including development tools)
+poetry install --extras dev
 
 # Set required environment
 export AYT_WORKDIR="/path/to/downloads"
@@ -140,8 +140,9 @@ poetry run mdformat README.md
 **Dependency Management:**
 
 ```bash
-poetry install    # Install dependencies
-poetry update     # Update dependencies
+poetry install                  # Install runtime dependencies only
+poetry install --extras dev     # Install with development tools
+poetry update                   # Update dependencies
 ```
 
 ## Architecture
