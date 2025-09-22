@@ -266,6 +266,28 @@ All routes use the `/yourtube` prefix:
 - werkzeug: WSGI utilities and proxy handling
 - yt-dlp: YouTube downloader (external dependency)
 
+## Usage Guidelines
+
+This application provides a web interface for yt-dlp to download videos.
+Please use responsibly.
+
+See [yt-dlp FAQ](https://github.com/yt-dlp/yt-dlp/wiki/FAQ) for their usage guidelines.
+
+**Please Consider:**
+
+- Respect the terms of service of video platforms
+- Only download content you have permission to access
+- Follow your local laws and regulations
+- Use for personal archiving of legally accessible content
+- Provide your own authentication (cookies) when required
+
+**This Tool:**
+
+- Provides a web interface for yt-dlp functionality
+- Users are responsible for their usage and downloads
+
+**Questions?** Consult the platform's terms of service and your local regulations.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE)
