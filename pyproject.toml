@@ -58,13 +58,19 @@ dev = [
 ]
 
 [tool.poetry]
-packages = [{ include = "all_your_tube", from = "src" }]
+packages = [
+    { include = "all_your_tube", from = "src" },
+    { include = "scripts" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"
 
 [tool.pylint.MASTER]
 ignore-paths = ["gunicorn.conf.py", "src/all_your_tube/wsgi.py"]
+
+[tool.isort]
+profile = "black"
 
 [tool.mdformat]
 wrap = 80
