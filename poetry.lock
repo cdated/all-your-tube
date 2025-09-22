@@ -933,6 +933,18 @@ files = [
 ]
 
 [[package]]
+name = "typing-extensions"
+version = "4.15.0"
+description = "Backported and Experimental Type Hints for Python 3.9+"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "typing_extensions-4.15.0-py3-none-any.whl", hash = "sha256:f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548"},
+    {file = "typing_extensions-4.15.0.tar.gz", hash = "sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466"},
+]
+
+[[package]]
 name = "uc-micro-py"
 version = "1.0.3"
 description = "Micro subset of unicode data files for linkify-it-py projects."
@@ -1073,4 +1085,4 @@ dev = ["black", "isort", "mdformat", "mdformat-gfm", "pre-commit", "pylint", "py
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "47700ef502534b8a826a0170af9115ecf1cac2d51325dc49ac48ec3a6fe53db4"
+content-hash = "6a3550cd5061efff15e2f2ca383796f8049374fb02049ebe58d2527322471ca1"

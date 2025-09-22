@@ -37,6 +37,7 @@ dependencies = [
     "requests>=2.31.0",
     "gunicorn>=23.0.0",
     "python-ulid>=1.1.0",
+    "typing-extensions>=4.0.0",
 ]
 
 [project.urls]
