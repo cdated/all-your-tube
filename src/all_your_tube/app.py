@@ -122,14 +122,12 @@ def download_video():
         if not workdir.is_dir():
             workdir.mkdir(mode=0o774, parents=True, exist_ok=True)
 
-        os.chdir(workdir)
-
         # Use a ULID to refer to the download logs
         pid = str(ULID())
         job_log = pid + ".log"
         app.logger.info("Running with yt-dlp args: %s", ytargs)
 
-        with open(job_log, "w", encoding="utf-8") as f:
+        with open(workdir / job_log, "w", encoding="utf-8") as f:
             f.write("Starting...\n")
 
         # pylint: disable=consider-using-with
@@ -142,6 +140,7 @@ def download_video():
             stderr=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,
             start_new_session=True,
+            cwd=workdir,
         )
 
     # Check if this is an AJAX request
