@@ -73,6 +73,9 @@ python = "^3.11"
 [tool.pylint.MASTER]
 ignore-paths = ["gunicorn.conf.py"]
 
+[tool.pylint.MESSAGES_CONTROL]
+disable = ["redefined-outer-name"]
+
 [tool.isort]
 profile = "black"
 
