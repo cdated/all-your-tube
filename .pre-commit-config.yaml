@@ -1,25 +1,26 @@
 repos:
-  - repo: https://github.com/psf/black
-    rev: 24.4.1
+  - repo: local
     hooks:
       - id: black
+        name: black
+        entry: black
+        language: system
+        types: [python]
         args: [--line-length=88]
-  #        exclude: 'gunicorn\.conf\.py'
 
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
       - id: isort
+        name: isort
+        entry: isort
+        language: system
+        types: [python]
         args: [--profile=black]
-  #        exclude: 'gunicorn\.conf\.py'
 
-  - repo: https://github.com/pycqa/pylint
-    rev: v3.1.0
-    hooks:
       - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
         args: [--rcfile=pyproject.toml]
-        additional_dependencies:
-          [flask, werkzeug, pygtail, python-ulid, watchdog, requests, gunicorn]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
